@@ -1,0 +1,14 @@
+Parte 1:
+	Shell
+		-Invocação externa : 
+			/bin/ping -c 10 www.google.com.br
+			/usr/bin/cal 2017
+			./ep1 <agrmuentos>
+		-Comandos internos embutido (ou seja, não pode-se usar chamada externa pra eles):
+			chown :<grupo> <arquivo (no diretório atual)>
+			date
+		-Teclas:
+			"Cima" e "Baixo" alternando entre os comandos já executados, permitindo a edição deles
+				(como GNU {readline,history})
+		-Aparência: 
+			"[dir. atual]$ "
