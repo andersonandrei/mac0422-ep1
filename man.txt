@@ -1,0 +1,15 @@
+fork() -> Cria uma cópia do processo root, em um novo espaço de memória, e devolve o pid desse processo.
+execve() -> Substitui a imagem de um processo por outro, em conjunto com o fork auxilia na criação de novos processos, basta substituir o criado pelo fork pelo processo que deseja-se criar especificamente.
+
+	#include <unistd.h>
+
+       		int execve(const char *filename, char *const argv[],char *const envp[]);
+	--> Então aqui usa-se em *filename o diretorio para o processo ping (por ex)
+	
+	#include <unistd.h>
+	int main() {
+        	char *args[2];
+        	args[0] = "/bin/ls";
+	        args[1] = "-lh";
+	        execve(args[0], args, NULL);
+	}
