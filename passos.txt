@@ -12,3 +12,5 @@ Parte 1:
 				(como GNU {readline,history})
 		-Aparência: 
 			"[dir. atual]$ "
+	--- Invocações externas por fork e execv
+	--- Chamas embutidas : syscalls
