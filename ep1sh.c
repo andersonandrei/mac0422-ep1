@@ -3,27 +3,56 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+typedef struct {
+  char **text;
+  int qnt;
+} input;
+
+
+void mysplit(char *in, input *inp) {
+  int i, n = 0;
+  for (i = 0; i<strlen(in) ; i++) {
+    if(in[i] == 32)  {
+      n++; //32 == " "
+    }
+  }
+  inp->qnt = n+1;
+  inp->text = malloc (n+1 * sizeof(char *));
+  inp->text[0] = malloc (50 * sizeof(char));
+  inp->text[0] = strtok(in, " ");
+  for(i = 1; i < n+1; i++) {
+    inp->text[i] = malloc (50 * sizeof(char));
+    inp->text[i] = strtok(NULL, " ");
+  }
+  return;
+}
 
 int main ()
 {
-	char *args[2];
-    int ret = fork();
-    char *const parmList[] = {"/bin/ping", "-c", "10", "www.google.com.br", NULL};
-    if(ret==0)
+  input *inp;
+  inp = malloc (sizeof (input));
+  char *in; 
+  in = readline("\n[./]$ ");
+  mysplit(in, inp);
+  int ret = fork();
+	if(ret==0)
     {
        //child process
-       printf("Oi1\n");
-       //execve("./faz1"); // GIVE ADDRESS OF 2nd element as starting point to skip source.txt
-       execve(parmList[0], parmList, NULL);
-       printf("EXECV Failed from child\n");
+       execve(inp->text[0], inp->text, NULL);
+       printf("\nEXECV Failed from child\n");
     }
     else if(ret>0)
     {
        //parent process
-       printf("Oi2\n");
+       printf("\nOi2\n");
        //execve("./faz2");
-       printf("EXECV Failed from parent\n");
+       printf("\nEXECV Failed from parent\n");
     }
     else
     {
