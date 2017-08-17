@@ -33,31 +33,36 @@ void mysplit(char *in, input *inp) {
   return;
 }
 
+void calls (input *inp) {
+  if (strcmp(inp->text[0],"/bin/ping") == 0 || strcmp(inp->text[0],"/usr/bin/cal") == 0 || strcmp(inp->text[0],"./ep1") == 0) {
+    execve(inp->text[0], inp->text, NULL);
+  }
+  else {
+    printf("Command not found");
+  } 
+}
+
 int main ()
 {
   input *inp;
   inp = malloc (sizeof (input));
   char *in; 
-  in = readline("\n[./]$ ");
-  mysplit(in, inp);
-  int ret = fork();
-	if(ret==0)
+  int ret;
+  while(1) {
+    in = readline("\n[./]$ ");
+    mysplit(in, inp);
+    ret = fork();
+    if(ret == 0)
     {
-       //child process
-       execve(inp->text[0], inp->text, NULL);
-       printf("\nEXECV Failed from child\n");
-    }
-    else if(ret>0)
-    {
-       //parent process
-       printf("\nOi2\n");
-       //execve("./faz2");
-       printf("\nEXECV Failed from parent\n");
+      //child process
+      calls(inp);
+      //system(strcat("kill -9",ret));
     }
     else
     {
        //you will come here only if fork() fails.
        printf("forkFailed\n");
     }
-    return 0;
+  }
+  return 0;
 }
