@@ -9,6 +9,9 @@
 #include <readline/history.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+//current dir
+#include <unistd.h>
+#include <errno.h>
 
 typedef struct {
   char **text;
@@ -45,11 +48,13 @@ void calls (input inp) {
 int main ()
 {
   input inp;
-  char *in; 
+  char *in;
+  char dir[1024];
   int ret, i;
   while(1) {
     in = malloc (sizeof (char *));
-    in = readline("\n[./]$ ");
+    if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s", dir);
+    in = readline("]$ ");
     mysplit(in, &inp);
     ret = fork();
     if(ret == 0)
