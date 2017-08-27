@@ -49,13 +49,48 @@ int main ()
 {
   input inp;
   char *in;
+  char *hist;
+  HIST_ENTRY *h;
   char dir[1024];
   int ret, i;
+  int uid = getuid();
+  int gid = getgid();
+  int euid = geteuid();
+  time_t t = time(NULL);
+  struct tm *tm = localtime(&t);
+    
   while(1) {
     in = malloc (sizeof (char *));
     if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s", dir);
+    //use_history();
     in = readline("]$ ");
+    
+/*    if(strcmp(in,"a") == 0) {
+      h = previous_history();
+      printf("oi %s\n",h);
+    }
+    else {
+      add_history(in);
+    }*/
+    /*ret = strtol(str, &ptr, 10);
+    printf("The number(unsigned long integer) is %ld\n", ret);
+    printf("String part is |%s|", ptr);*/
+    
+    printf("The REAL UID =: %d\n", uid);
+    printf("The EFFECTIVE UID =: %d\n", euid);
+
+    printf("Fora\n");
     mysplit(in, &inp);
+    if (strcmp(inp.text[0],"chown") == 0) {
+      printf("Chownzei\n");
+      chown(inp.text[2], uid, gid);
+    }
+
+    else if (strcmp(inp.text[0],"date") == 0) {
+      printf("date: ");
+      printf("%s\n", asctime(tm));
+
+    }
     ret = fork();
     if(ret == 0)
     {
