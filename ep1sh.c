@@ -4,13 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//current dir
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-//current dir
-#include <unistd.h>
+
 #include <errno.h>
 
 typedef struct {
@@ -52,7 +52,6 @@ void externalCalls (input inp) {
 void internCalls (input inp) {
   int uid = getuid();
   int gid = getgid();
-  int euid = geteuid();
   time_t t = time(NULL);
   struct tm *tm = localtime(&t);
   if (strcmp(inp.text[0],"chown") == 0) {
@@ -79,25 +78,17 @@ void calls (input inp) {
 
 int main ()
 {
+  use_history();
   input inp;
   char *in;
-  char *hist;
-  HIST_ENTRY *h;
   char dir[1024];
-  int i;
 
   while(1) {
     in = malloc (sizeof (char *));
     if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s", dir);
-    //use_history();
+    
     in = readline("]$ ");
-    /*if(strcmp(in,"a") == 0) {
-      h = previous_history();
-      printf("oi %s\n",h);
-    }
-    else {
-      add_history(in);
-    }*/
+    add_history(in);
     /*ret = strtol(str, &ptr, 10);
     printf("The number(unsigned long integer) is %ld\n", ret);
     printf("String part is |%s|", ptr);*/
