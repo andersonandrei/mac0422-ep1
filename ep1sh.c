@@ -78,7 +78,7 @@ void calls (input inp) {
 
 int main ()
 {
-  use_history();
+  using_history();
   input inp;
   char *in;
   char dir[1024];
@@ -86,12 +86,8 @@ int main ()
   while(1) {
     in = malloc (sizeof (char *));
     if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s", dir);
-    
     in = readline("]$ ");
     add_history(in);
-    /*ret = strtol(str, &ptr, 10);
-    printf("The number(unsigned long integer) is %ld\n", ret);
-    printf("String part is |%s|", ptr);*/
     mysplit(in, &inp);
     calls(inp);
     free(inp.text);
