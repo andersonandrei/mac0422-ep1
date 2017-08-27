@@ -93,5 +93,7 @@ int main ()
     free(inp.text);
     free(in);
   }
+
+  clear_history();
   return 0;
 }
