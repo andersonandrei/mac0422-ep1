@@ -35,10 +35,42 @@ void mysplit(char *in, input *inp) {
   return;
 }
 
+void externalCalls (input inp) {
+  int ret;
+  ret = fork();
+  if(ret == 0) {
+    execv(inp.text[0], inp.text);
+  }
+  else if (ret == -1) {
+    printf("forkFailed\n");
+  }
+  else {
+     waitpid(ret, NULL, 0);
+  }
+}
+
+void internCalls (input inp) {
+  int uid = getuid();
+  int gid = getgid();
+  int euid = geteuid();
+  time_t t = time(NULL);
+  struct tm *tm = localtime(&t);
+  if (strcmp(inp.text[0],"chown") == 0) {
+    printf("Chownzei\n");
+    chown(inp.text[2], uid, gid);
+  }
+  else if (strcmp(inp.text[0],"date") == 0) {
+    printf("date: \n");
+    printf("%s", asctime(tm));
+  }
+}
+
 void calls (input inp) {
-  int i;
   if (strcmp(inp.text[0],"/bin/ping") == 0 || strcmp(inp.text[0],"/usr/bin/cal") == 0 || strcmp(inp.text[0],"./ep1") == 0) {
-    printf("%d",execv(inp.text[0], inp.text));
+    externalCalls(inp);
+  }
+  else if ((strcmp(inp.text[0],"chown") == 0) || (strcmp(inp.text[0],"date") == 0)) {
+    internCalls(inp);  
   }
   else {
     printf("Command not found");
@@ -52,20 +84,14 @@ int main ()
   char *hist;
   HIST_ENTRY *h;
   char dir[1024];
-  int ret, i;
-  int uid = getuid();
-  int gid = getgid();
-  int euid = geteuid();
-  time_t t = time(NULL);
-  struct tm *tm = localtime(&t);
-    
+  int i;
+
   while(1) {
     in = malloc (sizeof (char *));
     if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s", dir);
     //use_history();
     in = readline("]$ ");
-    
-/*    if(strcmp(in,"a") == 0) {
+    /*if(strcmp(in,"a") == 0) {
       h = previous_history();
       printf("oi %s\n",h);
     }
@@ -75,35 +101,8 @@ int main ()
     /*ret = strtol(str, &ptr, 10);
     printf("The number(unsigned long integer) is %ld\n", ret);
     printf("String part is |%s|", ptr);*/
-    
-    printf("The REAL UID =: %d\n", uid);
-    printf("The EFFECTIVE UID =: %d\n", euid);
-
-    printf("Fora\n");
     mysplit(in, &inp);
-    if (strcmp(inp.text[0],"chown") == 0) {
-      printf("Chownzei\n");
-      chown(inp.text[2], uid, gid);
-    }
-
-    else if (strcmp(inp.text[0],"date") == 0) {
-      printf("date: ");
-      printf("%s\n", asctime(tm));
-
-    }
-    ret = fork();
-    if(ret == 0)
-    {
-      //child process
-      calls(inp);
-    }
-    else if (ret == -1) {
-      printf("forkFailed\n");
-    }
-    else
-    {
-       waitpid(ret, NULL, 0);
-    }
+    calls(inp);
     free(inp.text);
     free(in);
   }
