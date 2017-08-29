@@ -82,11 +82,13 @@ int main ()
   input inp;
   char *in;
   char dir[1024];
+  char inPrompt[100];
 
   while(1) {
+    sprintf(inPrompt, "[%s] $ ", getcwd (NULL, 1024));
     in = malloc (sizeof (char *));
-    if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s", dir);
-    in = readline("]$ ");
+    //if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s]", dir);
+    in = readline(inPrompt);
     add_history(in);
     mysplit(in, &inp);
     calls(inp);
