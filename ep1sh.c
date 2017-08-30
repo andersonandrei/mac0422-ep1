@@ -13,6 +13,10 @@
 
 #include <errno.h>
 
+#include <sys/types.h>
+#include <grp.h>
+
+
 typedef struct {
   char **text;
   int qnt;
@@ -48,19 +52,24 @@ void externalCalls (input inp) {
      waitpid(ret, NULL, 0);
   }
 }
-
+   
 void internCalls (input inp) {
   int uid = getuid();
-  int gid = getgid();
+  char *gp;
+
   time_t t = time(NULL);
+  char dateBuffer[80];
   struct tm *tm = localtime(&t);
+  time(&t);
+  tm = localtime(&t);
+
   if (strcmp(inp.text[0],"chown") == 0) {
-    printf("Chownzei\n");
-    chown(inp.text[2], uid, gid);
+    gr = getgrnam(inp.text[1]+1);
+    chown(inp.text[2], uid, gr->gr_gid);
   }
   else if (strcmp(inp.text[0],"date") == 0) {
-    printf("date: \n");
-    printf("%s", asctime(tm));
+    strftime(dateBuffer,80,"%a %b %d %I:%M:%S %Z %Y", tm);
+    printf("%s\n", dateBuffer);
   }
 }
 
@@ -69,10 +78,10 @@ void calls (input inp) {
     externalCalls(inp);
   }
   else if ((strcmp(inp.text[0],"chown") == 0) || (strcmp(inp.text[0],"date") == 0)) {
-    internCalls(inp);  
+    internCalls(inp);
   }
   else {
-    printf("Command not found");
+    printf("Command not found\n");
   } 
 }
 
@@ -81,13 +90,10 @@ int main ()
   using_history();
   input inp;
   char *in;
-  char dir[1024];
   char inPrompt[100];
-
   while(1) {
     sprintf(inPrompt, "[%s] $ ", getcwd (NULL, 1024));
     in = malloc (sizeof (char *));
-    //if (getcwd(dir, sizeof(dir)) != NULL) printf("\n[%s]", dir);
     in = readline(inPrompt);
     add_history(in);
     mysplit(in, &inp);
