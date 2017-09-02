@@ -15,6 +15,11 @@
 #include <grp.h>
 #include <time.h>
 
+#include <pthread.h>
+#include <assert.h>
+#include <semaphore.h>
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
   char **text;
@@ -60,18 +65,6 @@ void externalCalls (input inp) {
   }
 }
 
-/* Receive the input, verify what intern
-   call should be executed, and invoke it. */
-void internCalls (input inp) {
-  if (strcmp(inp.text[0],"chown") == 0) {
-    myChown(inp);
-  }
-  else if (strcmp(inp.text[0],"date") == 0) {
-    date(inp);
-  }
-}
-
-
 /* Receive the input and execute 
    our implementation of chown function. */
 void myChown (input inp) {
@@ -100,6 +93,17 @@ void myDate (input inp) {
   printf("%s\n", dateBuffer);
 }
 
+/* Receive the input, verify what intern
+   call should be executed, and invoke it. */
+void internCalls (input inp) {
+  if (strcmp(inp.text[0],"chown") == 0) {
+    myChown(inp);
+  }
+  else if (strcmp(inp.text[0],"date") == 0) {
+    myDate(inp);
+  }
+}
+
 /* Receive the input, verify if the call
    required is valid in our shell and
    verify what kind of call is it, to 
@@ -117,12 +121,60 @@ void calls (input inp) {
   } 
 }
 
+void* perform_work( void* argument )
+{
+
+  int passed_in_value;
+  pthread_mutex_lock(&mutex);
+  passed_in_value = *( ( int* )argument );
+  printf( "Hello World! It's me, thread with argument %d!\n", passed_in_value );
+  pthread_mutex_unlock(&mutex);
+ 
+  /* optionally: insert more useful stuff here */
+  return NULL;
+}
+
+void usingThreads(int NUM_THREADS) {
+  pthread_t threads[NUM_THREADS];
+  int thread_args[NUM_THREADS];
+  int result_code;
+  unsigned index;
+  //int spare;
+
+  // create all threads one by one
+  for( index = 0; index < NUM_THREADS; ++index )
+  {
+    thread_args[ index ] = index;
+    printf("In main: creating thread %d\n", index);
+    result_code = pthread_create( &threads[index], NULL, perform_work, &thread_args[index] );
+    assert( !result_code );
+    
+  }
+ 
+  // wait for each thread to complete
+  for( index = 0; index < NUM_THREADS; ++index )
+  {
+    // block until thread 'index' completes
+      //sem_getvalue(&mutex, &spare);
+      result_code = pthread_join( threads[ index ], NULL );
+      assert( !result_code );
+      printf( "In main: thread %d has completed\n", index );
+  }
+ 
+  printf( "In main: All threads completed successfully\n" );
+  exit( EXIT_SUCCESS );
+}
+
 int main ()
 {
   using_history();
   input inp;
   char *in;
   char inPrompt[100];
+  pthread_mutex_init(&mutex, NULL);
+  usingThreads(5);
+  pthread_mutex_destroy(&mutex);
+
   while(1) {
     sprintf(inPrompt, "[%s] $ ", getcwd (NULL, 1024));
     in = malloc (sizeof (char *));
@@ -133,6 +185,7 @@ int main ()
     free(inp.text);
     free(in);
   }
+
 
   clear_history();
   return 0;
