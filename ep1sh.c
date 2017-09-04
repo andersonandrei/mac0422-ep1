@@ -19,7 +19,11 @@
 #include <assert.h>
 #include <semaphore.h>
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+//#include <ep1.c>
+
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex3 = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
   char **text;
@@ -102,6 +106,7 @@ void internCalls (input inp) {
   else if (strcmp(inp.text[0],"date") == 0) {
     myDate(inp);
   }
+
 }
 
 /* Receive the input, verify if the call
@@ -110,7 +115,7 @@ void internCalls (input inp) {
    do the call (external or intern).
 */
 void calls (input inp) {
-  if (strcmp(inp.text[0],"/bin/ping") == 0 || strcmp(inp.text[0],"/usr/bin/cal") == 0 || strcmp(inp.text[0],"./ep1") == 0) {
+  if (strcmp(inp.text[0],"/bin/ping") == 0 || strcmp(inp.text[0],"/usr/bin/cal") == 0 || strcmp(inp.text[0],"./ep1") == 0 || strcmp(inp.text[0],"./ep1") == 0) {
     externalCalls(inp);
   }
   else if ((strcmp(inp.text[0],"chown") == 0) || (strcmp(inp.text[0],"date") == 0)) {
@@ -121,15 +126,16 @@ void calls (input inp) {
   } 
 }
 
-void* perform_work( void* argument )
-{
+void* oi(void* argument){
+  return 0;
+}
 
-  int passed_in_value;
-  pthread_mutex_lock(&mutex);
-  passed_in_value = *( ( int* )argument );
-  printf( "Hello World! It's me, thread with argument %d!\n", passed_in_value );
-  pthread_mutex_unlock(&mutex);
- 
+void* perform_work(int i)
+{
+  //pthread_mutex_lock(&mutex1);
+  printf( "Hello World! It's me, thread with argument %d!\n", i );
+  //pthread_mutex_unlock(&mutex1);
+
   /* optionally: insert more useful stuff here */
   return NULL;
 }
@@ -144,26 +150,35 @@ void usingThreads(int NUM_THREADS) {
   // create all threads one by one
   for( index = 0; index < NUM_THREADS; ++index )
   {
-    thread_args[ index ] = index;
+    //pthread_mutex_lock(&mutex2);
+    thread_args[index] = index;
     printf("In main: creating thread %d\n", index);
-    result_code = pthread_create( &threads[index], NULL, perform_work, &thread_args[index] );
+    result_code = pthread_create( &threads[index], NULL, oi, &thread_args[index] );
     assert( !result_code );
-    
+    //pthread_mutex_unlock(&mutex2);
+    //pthread_join(threads[ index ], NULL);
+  
   }
  
+
   // wait for each thread to complete
   for( index = 0; index < NUM_THREADS; ++index )
   {
     // block until thread 'index' completes
       //sem_getvalue(&mutex, &spare);
-      result_code = pthread_join( threads[ index ], NULL );
-      assert( !result_code );
-      printf( "In main: thread %d has completed\n", index );
+      //pthread_mutex_unlock(&mutex3);
+      //result_code = pthread_join( threads[ index ], NULL );
+      //assert( !result_code );
+      perform_work(index);
+      printf("In main: thread %d has completed\n", index);
+      //pthread_mutex_unlock(&mutex3);
+      pthread_join(threads[ index ], NULL);
   }
  
   printf( "In main: All threads completed successfully\n" );
   exit( EXIT_SUCCESS );
 }
+
 
 int main ()
 {
@@ -171,9 +186,12 @@ int main ()
   input inp;
   char *in;
   char inPrompt[100];
-  pthread_mutex_init(&mutex, NULL);
-  usingThreads(5);
-  pthread_mutex_destroy(&mutex);
+
+  // pthread_mutex_init(&mutex1, NULL);
+  // pthread_mutex_init(&mutex2, NULL);
+  // pthread_mutex_init(&mutex3, NULL);
+  // usingThreads(5);
+  // pthread_mutex_destroy(&mutex1);
 
   while(1) {
     sprintf(inPrompt, "[%s] $ ", getcwd (NULL, 1024));
