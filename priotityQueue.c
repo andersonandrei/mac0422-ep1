@@ -38,9 +38,10 @@
         if ((front == NULL) && (rear == NULL))
         {
             tmp = malloc(sizeof(node));
-            front++;
-            rear++;
-            pri_que[rear] = data;
+            tmp.info = data.dt[data.posTemp];
+            tmp.id = data.id[data.posTemp];
+            front = rear = tmp;
+            tmp.
             return;
         }    
         else

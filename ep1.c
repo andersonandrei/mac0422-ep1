@@ -19,6 +19,8 @@
 
 #include <sys/queue.h>
 
+#include "queue.h"
+
 #define N 1024
 
 // typedef struct {
@@ -63,7 +65,6 @@ void createThreads(char *name) {
   	FILE *arq;
   	int result, resultCreation;
   	int i;
-  	int maxSize = N;
   	int cont = 0;
   	float t, dt, deadline;
   	char *n = malloc (1024 * sizeof(char));
@@ -140,6 +141,20 @@ void executeThreads() {
  	}
 }
 
+void enqueueThreads(th *process) {
+	int i;
+	create();
+	struct node *p;
+	p = malloc(sizeof(struct node));
+	for (i = 0; i < qntProcess; i++) {
+		printf("\n aqui");
+		p->info = process[i].dt;
+		p->id = process[i].id;
+		printf("Empilhando : %f %d\n", p->info, p->id);
+		enq(p);
+	}
+	return;
+}
 
 int main(int argc, char *argv[ ]) {
 	char *name;
@@ -152,6 +167,13 @@ int main(int argc, char *argv[ ]) {
 	}
 	createThreads(name);
 	printf("Qnt armazenada: %d \n", qntProcess);
+	enqueueThreads(process);
+	printf("Desempilhou:%d\n", deq());
+	printf("Desempilhou:%d\n", deq());
+	printf("Desempilhou:%d\n", deq());
+	printf("Desempilhou:%d\n", deq());
+	printf("Desempilhou:%d\n", deq());
+	printf("Desempilhou:%d\n", deq());
 	//executeThreads(&process);
 	//printingInfo(process);
 	//destroyThreads(process);
