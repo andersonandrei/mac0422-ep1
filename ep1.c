@@ -21,40 +21,45 @@
 
 #define N 1024
 
+// typedef struct {
+// 	pthread_t *threads;
+// 	pthread_mutex_t *mutex;
+// 	int *id;
+// 	char **name;
+// 	float *t;
+// 	float *dt;
+// 	float *deadline;
+// 	int qnt;
+// 	int posTemp;
+// }	th;
+
 typedef struct {
-  pthread_t *threads;
-  pthread_mutex_t *mutex;
-  char **name;
-  float *t;
-  float *dt;
-  float *deadline;
-  int qnt;
-  int posTemp;
+	int id;
+	char *name;
+	float t, dt, deadline;
+	pthread_t thread;
+	pthread_mutex_t mutex;
 } th;
 
-LIST_HEAD(listhead, entry) head;
+th *process;
+int qntProcess;
 
-struct entry {
-  th dataThread;
-  LIST_ENTRY(entry) entries;
-};
-
-void printingInfo(th *process) {
+void printingInfo() {
 	int i;
 	printf("To aqui");
 	fflush(stdout);
-	for (i = 0; i < process->qnt; i++) {
-		printf("Process %s : %f %f %f\n", process->name[i], process->t[i], process->dt[i], process->deadline[i]);
+	for (i = 0; i < qntProcess; i++) {
+		printf("Process %s : %f %f %f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
 	}
 }
 
 void* oi(void *argument){
-	th *process = (th *) argument;
-	printf("Oi sou uma thread %d : %f\n",process->posTemp, process->deadline[process->posTemp]);
+	th *t = (th *) argument;
+	printf("Oi sou uma thread %f \n", t->deadline);
 	return 0;
 }
 
-void createThreads(char *name, th *process) {
+void createThreads(char *name) {
   	FILE *arq;
   	int result, resultCreation;
   	int i;
@@ -62,12 +67,13 @@ void createThreads(char *name, th *process) {
   	int cont = 0;
   	float t, dt, deadline;
   	char *n = malloc (1024 * sizeof(char));
-  	process->threads = malloc(N * sizeof(pthread_t));
-  	process->mutex = malloc(N * sizeof(pthread_mutex_t));
-  	process->name = malloc(N * sizeof(char *));
-  	process->t = malloc (N * sizeof(float));
-	process->dt = malloc (N * sizeof(float));
-  	process->deadline = malloc (N * sizeof(float));
+ //  	process.threads = malloc(N * sizeof(pthread_t));
+ //  	process.mutex = malloc(N * sizeof(pthread_mutex_t));
+ //  	process.id = malloc(N * sizeof(int));
+ //  	process.name = malloc(N * sizeof(char *));
+ //  	process.t = malloc (N * sizeof(float));
+ // 	process.dt = malloc (N * sizeof(float));
+ //  	process.deadline = malloc (N * sizeof(float));
 
   	arq = fopen(name, "rt");
 	if (arq != NULL) {
@@ -75,49 +81,50 @@ void createThreads(char *name, th *process) {
 		cont = 1;
 		for (i = 0; result != EOF; i++){ 
 		//while(result != EOF) {
-			if (cont == maxSize) {
-				process->threads = realloc(process->threads, 2*N);
-				process->mutex = realloc(process->mutex, 2*N);
-				process->name = realloc(process->name, 2*N);
-  				process->t = realloc(process->t, 2*N);
-				process->dt = realloc(process->dt, 2*N);
-  				process->deadline = realloc(process->deadline, 2*N);
-  				maxSize *= 2;
-			}
-	    	process->name[i] = n;
-	    	process->t[i] = t;
-	    	process->dt[i] =  dt;
-	    	process->deadline[i] = deadline;
-	    	process->posTemp = i;
-	    	printf("Process %s : %f %f %f\n", process->name[i], process->t[i], process->dt[i], process->deadline[i]);
-	    	resultCreation = pthread_create(&process->threads[i], NULL, &oi, process);
-	    	pthread_join(process->threads[i], NULL);
+			// if (cont == maxSize) {
+			// 	process.threads = realloc(process.threads, 2*N);
+			// 	process.mutex = realloc(process.mutex, 2*N);
+			// 	process.id = realloc(process.id, 2*N);
+			// 	process.name = realloc(process.name, 2*N);
+  	// 			process.t = realloc(process.t, 2*N);
+			// 	process.dt = realloc(process.dt, 2*N);
+  	// 			process.deadline = realloc(process.deadline, 2*N);
+  	// 			maxSize *= 2;
+			// }
+			process[i].id = i;
+	    	process[i].name = n;
+	    	process[i].t = t;
+	    	process[i].dt =  dt;
+	    	process[i].deadline = deadline;
+	    	printf("Process %s : %f %f %f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
+	    	resultCreation = pthread_create(&process[i].thread, NULL, &oi, &process[i]);
+	    	pthread_join(process[i].thread, NULL);
 	    	assert( !resultCreation );
 	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 	    	cont++;
 		}
-		process->qnt = cont-1;
-		printf("guardei: %d\n", process->qnt);
+		qntProcess = cont-1;
+		printf("guardei: %d\n", qntProcess);
 	}
 	else {
 		printf("Nops\n");
 	}
 }
 
-void destroyThreads(th *process) {
+void destroyThreads() {
 	int i;
-	for (i = 0; i < process->qnt; i++) {
-		free(process->name[i]);
-		//pthread_exit();//;;(process->threads[i]);
+	for (i = 0; i < qntProcess; i++) {
+		free(process[i].name);
+		//pthread_exit();//;;(process.threads[i]);
 	}
-	free(process->threads);
-	free(process->name);
-	free(process->t);
-	free(process->dt);
-	free(process->deadline);
+	free(&process[i].thread);
+	free(&process[i].name);
+	free(&process[i].t);
+	free(&process[i].dt);
+	free(&process[i].deadline);
 } 
 
-void executeThreads(th *process) {
+void executeThreads() {
   	struct timeval tv;
   	//time_t seconds;
   	int i;
@@ -126,35 +133,25 @@ void executeThreads(th *process) {
 
  	printf("%ld\n" ,tv.tv_sec);
 
- 	printf("qnt: %d" , process->qnt);
- 	for (i = 0; i < process->qnt; i++) {
- 		printf("Thread : %s\n", process->name[i]);
- 		pthread_join(process->threads[i], NULL);
+ 	printf("qnt: %d" , qntProcess);
+ 	for (i = 0; i < qntProcess; i++) {
+ 		printf("Thread : %s\n", process[i].name);
+ 		pthread_join(process[i].thread, NULL);
  	}
 }
 
-void enqueueThreads(th *process) {
-	int i;
-	LIST_INIT(&head);
-	struct entry *elem;
-	for(i = 0; i < process -> qnt; i++) {
-		LIST_INSERT_HEAD(&head, process.threads[i], entrie);
-  	}
-
-}
 
 int main(int argc, char *argv[ ]) {
 	char *name;
-	th process;
-	//process = malloc (sizeof(th));
+	process = malloc (N * sizeof(th));
 	if(argc == 2) {
 		name = argv[1];
 	}
 	else {
 		printf("Argumento inválido\n");
 	}
-	createThreads(name, &process);
-	printf("Qnt armazenada: %d \n", process.qnt);
+	createThreads(name);
+	printf("Qnt armazenada: %d \n", qntProcess);
 	//executeThreads(&process);
 	//printingInfo(process);
 	//destroyThreads(process);
