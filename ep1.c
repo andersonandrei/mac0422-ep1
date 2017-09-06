@@ -11,29 +11,18 @@
 #include <sys/types.h>
 #include <grp.h>
 #include <time.h>
+#define __USE_GNU
 #include <sys/time.h>
+#include <sys/resource.h>
 
 #include <pthread.h>
 #include <assert.h>
 #include <semaphore.h>
 
 #include <sys/queue.h>
-
 #include "queue.h"
 
 #define N 1024
-
-// typedef struct {
-// 	pthread_t *threads;
-// 	pthread_mutex_t *mutex;
-// 	int *id;
-// 	char **name;
-// 	float *t;
-// 	float *dt;
-// 	float *deadline;
-// 	int qnt;
-// 	int posTemp;
-// }	th;
 
 typedef struct {
 	int id;
@@ -55,52 +44,25 @@ void printingInfo() {
 	}
 }
 
-void* oi(void *argument){
-	th *t = (th *) argument;
-	printf("Oi sou uma thread %f \n", t->deadline);
-	return 0;
-}
-
 void createThreads(char *name) {
   	FILE *arq;
-  	int result, resultCreation;
+  	int result;
   	int i;
   	int cont = 0;
   	float t, dt, deadline;
   	char *n = malloc (1024 * sizeof(char));
- //  	process.threads = malloc(N * sizeof(pthread_t));
- //  	process.mutex = malloc(N * sizeof(pthread_mutex_t));
- //  	process.id = malloc(N * sizeof(int));
- //  	process.name = malloc(N * sizeof(char *));
- //  	process.t = malloc (N * sizeof(float));
- // 	process.dt = malloc (N * sizeof(float));
- //  	process.deadline = malloc (N * sizeof(float));
-
   	arq = fopen(name, "rt");
 	if (arq != NULL) {
 		result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 		cont = 1;
 		for (i = 0; result != EOF; i++){ 
-		//while(result != EOF) {
-			// if (cont == maxSize) {
-			// 	process.threads = realloc(process.threads, 2*N);
-			// 	process.mutex = realloc(process.mutex, 2*N);
-			// 	process.id = realloc(process.id, 2*N);
-			// 	process.name = realloc(process.name, 2*N);
-  	// 			process.t = realloc(process.t, 2*N);
-			// 	process.dt = realloc(process.dt, 2*N);
-  	// 			process.deadline = realloc(process.deadline, 2*N);
-  	// 			maxSize *= 2;
-			// }
 			process[i].id = i;
 	    	process[i].name = n;
+	    	printf("------ COlocnado em i: %d, o nome : %s\n", i, n);
 	    	process[i].t = t;
 	    	process[i].dt =  dt;
 	    	process[i].deadline = deadline;
 	    	printf("Process %s : %f %f %f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
-	    	resultCreation = pthread_create(&process[i].thread, NULL, &oi, &process[i]);
-	    	pthread_join(process[i].thread, NULL);
-	    	assert( !resultCreation );
 	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 	    	cont++;
 		}
@@ -129,11 +91,8 @@ void executeThreads() {
   	struct timeval tv;
   	//time_t seconds;
   	int i;
-
  	gettimeofday(&tv, NULL); 
-
  	printf("%ld\n" ,tv.tv_sec);
-
  	printf("qnt: %d" , qntProcess);
  	for (i = 0; i < qntProcess; i++) {
  		printf("Thread : %s\n", process[i].name);
@@ -141,19 +100,73 @@ void executeThreads() {
  	}
 }
 
+void enqueueThread(th thread) {
+	struct node *p;
+	p = malloc(sizeof(struct node));
+	p->info = thread.dt;
+	p->id = thread.id;
+	enq(p);
+	return;
+}
+
 void enqueueThreads(th *process) {
 	int i;
 	create();
-	struct node *p;
-	p = malloc(sizeof(struct node));
 	for (i = 0; i < qntProcess; i++) {
-		printf("\n aqui");
-		p->info = process[i].dt;
-		p->id = process[i].id;
-		printf("Empilhando : %f %d\n", p->info, p->id);
-		enq(p);
+		printf("Empilhando %d - %s com dt: %f\n", i, process[i].name, process[i].dt);
+		enqueueThread(process[i]);
 	}
 	return;
+}
+
+void* job(void *argument){
+	struct rusage ru;
+	struct timeval utime;
+	float seconds = 0; 
+	int i, j;
+	th *t = (th *) argument;
+	printf("Dentro do processo: thread %d-%s com dt: %f \n", t->id, t->name, t->dt);
+	getrusage(RUSAGE_THREAD, &ru);
+	utime = ru.ru_utime;
+	printf("Peguei o time : %ld e %ld \n", utime.tv_sec, utime.tv_usec);
+	while (seconds < (1 * t-> dt)) {
+		//spend time
+		for (i = 0; i < 10; i++) {
+			j++;
+		}
+		getrusage(RUSAGE_THREAD, &ru);
+		utime = ru.ru_utime;
+		seconds = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000);
+	}
+	printf("Ficou : %f s\n", seconds);
+	return 0;
+}
+
+void schedulerSJF(th *process) {
+	int id;
+	int result_code;
+	int cont = qntProcess;
+	printf("Escalonador ------------\n");
+	enqueueThreads(process);
+	removeAll();
+	enqueueThreads(process);
+	printf("Vendo fila\n");
+	display();
+	while (cont > 0) {
+		id = deq();
+		printf("Desempilhou %d agr ta com tamanho: %d\n", id, queuesize());
+		if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
+			printf("Erro ao criar\n");
+		}
+		else {
+			printf("Vai criar a thread ----\n");
+			pthread_mutex_lock(&process[id].mutex);
+			result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
+			pthread_join(process[id].thread, NULL);
+			pthread_mutex_unlock(&process[id].mutex);
+		}
+		cont--;
+	}
 }
 
 int main(int argc, char *argv[ ]) {
@@ -167,13 +180,15 @@ int main(int argc, char *argv[ ]) {
 	}
 	createThreads(name);
 	printf("Qnt armazenada: %d \n", qntProcess);
-	enqueueThreads(process);
-	printf("Desempilhou:%d\n", deq());
-	printf("Desempilhou:%d\n", deq());
-	printf("Desempilhou:%d\n", deq());
-	printf("Desempilhou:%d\n", deq());
-	printf("Desempilhou:%d\n", deq());
-	printf("Desempilhou:%d\n", deq());
+	schedulerSJF(process);
+	//enqueueThreads(process);
+	// enqueueThreads(process);
+	// id = deq();
+	// printf("Desempilhou %d - %s com dt: %f\n", id, process[id].name, process[id].dt);
+	// id = deq();
+	// printf("Desempilhou %d - %s com dt: %f\n", id, process[id].name, process[id].dt);
+	// id = deq();
+	// printf("Desempilhou %d - %s com dt: %f\n", id, process[id].name, process[id].dt);
 	//executeThreads(&process);
 	//printingInfo(process);
 	//destroyThreads(process);
