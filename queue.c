@@ -1,8 +1,7 @@
 /*
  * C Program to Implement Queue Data Structure using Linked List
  */
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "queue.h"
 
 int count = 0;

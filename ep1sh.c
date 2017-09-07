@@ -1,29 +1,8 @@
 /*	EP1 - MAC0422 
 	Shell + Gerenciados de processos
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-//current dir
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <grp.h>
-#include <time.h>
 
-#include <pthread.h>
-#include <assert.h>
-#include <semaphore.h>
-
-//#include <ep1.c>
-
-pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex3 = PTHREAD_MUTEX_INITIALIZER;
+#include "ep1sh.h"
 
 typedef struct {
   char **text;

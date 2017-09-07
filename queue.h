@@ -1,3 +1,9 @@
+#ifndef QUEUE
+#define QUEUE
+
+#include <stdio.h>
+#include <stdlib.h>
+
 struct node
 {
     int id;
@@ -15,3 +21,5 @@ int frontelement();
 //int main();
 void check(struct node *data);
 void removeAll();
+
+#endif
