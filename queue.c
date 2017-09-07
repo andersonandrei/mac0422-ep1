@@ -22,6 +22,7 @@ int queuesize()
 void enq(struct node *data)
 {
     if (rear == NULL) {
+        printf("Colocou no inicio\n");
         rear = (struct node *)malloc(1*sizeof(struct node));
         rear->ptr = NULL;
         rear->info = data->info;
@@ -30,6 +31,7 @@ void enq(struct node *data)
     }
     else
     {
+        printf("Colocou depois\n");
         check(data);
     }
     count++;
@@ -37,7 +39,7 @@ void enq(struct node *data)
 
 void check(struct node *data) {
     struct node *current, *prev, *new;
-    current = rear;
+    current = front;
     prev = NULL;
     new = (struct node *)malloc(1*sizeof(struct node));
     new->info = data->info;
@@ -47,11 +49,14 @@ void check(struct node *data) {
         current = current->ptr;
     }
     if(prev == NULL) {
+        printf("Na cabeça\n");
         new->ptr = front;
         front = new;
     }
     else {
+        printf("No else\n");
         prev->ptr = new;
+        rear = new;
     }
     new->ptr = current;
     return;
@@ -73,27 +78,35 @@ void display()
         front1 = front1->ptr;
     }
     if (front1->ptr == NULL) {
-        printf("ultimo\n");
-        printf("%d\n", front1->id);
+        printf("ultimo ");
+        printf("%d\n\n", front1->id);
     }
 }
- 
+
 /* Dequeing the queue */
-int deq() {
+/*int deq() {
     int id;
     struct node *current, *prev;
     current = front;
+    prev = NULL;
+    printf("current: #%08x\n", current);
     while(current->ptr != NULL) {
-        fflush(stdout);
         prev = current;
         current = current->ptr;
     }
+    printf("prev: #%08x\n", prev);
     if(current != NULL) {
+        printf("\n ta no if");
         fflush(stdout);
         id = current->id;
-        //free(current);
+        printf("\n ta no if 2");
+        fflush(stdout);
+        //current = NULL;
+        printf("\n ta no if 3");
+        fflush(stdout);
         count--;
         prev->ptr = NULL;
+        
         return id;
     }
     else {
@@ -101,6 +114,35 @@ int deq() {
         printf("Ta vazio\n");
         return -1;
     }
+}*/
+
+/* Dequeing the queue */
+int deq()
+{
+    int id;
+    struct node *current, *prev;
+    current = front;
+    prev = NULL;
+    while(current->ptr != NULL) {
+        prev = current;
+        current = current->ptr;
+    }
+    if (current == NULL) {
+        return -1;
+    }
+    else {
+        id = current->id;
+        if(prev == NULL) {
+            current = NULL;
+        }
+        else {
+            prev->ptr = NULL;
+        }
+        count--;
+        return id;
+    }
+
+   
 }
 
 void removeAll() {

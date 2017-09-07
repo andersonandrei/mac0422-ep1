@@ -54,24 +54,26 @@ void createThreads(char *name) {
   	arq = fopen(name, "rt");
 	if (arq != NULL) {
 		result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
-		cont = 1;
 		for (i = 0; result != EOF; i++){ 
+			printf("Leu %s : %f %f %f\n", n, t, dt, deadline);
 			process[i].id = i;
 	    	process[i].name = n;
-	    	printf("------ COlocnado em i: %d, o nome : %s\n", i, n);
+	    	printf("------ Colocnado em i: %d, o nome : %s\n", i, n);
 	    	process[i].t = t;
 	    	process[i].dt =  dt;
 	    	process[i].deadline = deadline;
 	    	printf("Process %s : %f %f %f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
-	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 	    	cont++;
+	    	n = malloc (1024 * sizeof(char));
+	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 		}
-		qntProcess = cont-1;
+		qntProcess = cont;
 		printf("guardei: %d\n", qntProcess);
 	}
 	else {
 		printf("Nops\n");
 	}
+	fclose(arq);
 }
 
 void destroyThreads() {
@@ -105,6 +107,7 @@ void enqueueThread(th thread) {
 	p = malloc(sizeof(struct node));
 	p->info = thread.dt;
 	p->id = thread.id;
+	printf("Empilhando espec %d - %f\n", p->id, p->info);
 	enq(p);
 	return;
 }
@@ -113,7 +116,7 @@ void enqueueThreads(th *process) {
 	int i;
 	create();
 	for (i = 0; i < qntProcess; i++) {
-		printf("Empilhando %d - %s com dt: %f\n", i, process[i].name, process[i].dt);
+		printf("----Empilhando %d - %s com dt: %f\n", i, process[i].name, process[i].dt);
 		enqueueThread(process[i]);
 	}
 	return;
@@ -130,7 +133,6 @@ void* job(void *argument){
 	utime = ru.ru_utime;
 	printf("Peguei o time : %ld e %ld \n", utime.tv_sec, utime.tv_usec);
 	while (seconds < (1 * t-> dt)) {
-		//spend time
 		for (i = 0; i < 10; i++) {
 			j++;
 		}
@@ -142,17 +144,18 @@ void* job(void *argument){
 	return 0;
 }
 
-void schedulerSJF(th *process) {
+void schedulerSJF(th *process, char *name) {
 	int id;
 	int result_code;
 	int cont = qntProcess;
+	createThreads(name);
+	cont = qntProcess;
 	printf("Escalonador ------------\n");
+	//Xprintf("No scheduler: thread %d-%s com dt: %f \n", process[0].id, process[0].name, process[0].dt);
 	enqueueThreads(process);
-	removeAll();
-	enqueueThreads(process);
-	printf("Vendo fila\n");
-	display();
+	printf("Cont : %d", cont);
 	while (cont > 0) {
+		printf("No while \n");
 		id = deq();
 		printf("Desempilhou %d agr ta com tamanho: %d\n", id, queuesize());
 		if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
@@ -178,9 +181,8 @@ int main(int argc, char *argv[ ]) {
 	else {
 		printf("Argumento inválido\n");
 	}
-	createThreads(name);
 	printf("Qnt armazenada: %d \n", qntProcess);
-	schedulerSJF(process);
+	schedulerSJF(process, name);
 	//enqueueThreads(process);
 	// enqueueThreads(process);
 	// id = deq();
