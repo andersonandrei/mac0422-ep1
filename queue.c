@@ -19,22 +19,58 @@ int queuesize() {
 }
 
 /* Enqueing the queue */
-void enq(struct node *data, struct node **rear, struct node **front)
+void enqEnd (struct node *data, struct node **rear, struct node **front)
 {
-    printf("front entrou: #%08x\n " , front);
     if (rear == NULL) {
-        printf("Colocou no inicio\n");
         *rear = (struct node *)malloc(1*sizeof(struct node));
         (*rear)->ptr = NULL;
         (*rear)->info = data->info;
         (*rear)->id = data->id;
         *front = *rear;
-        printf("Saiu com front: #%08x \n", front);
     }
     else {
-        printf("Colocou depois\n");
+        checkEnd(data, rear, front);
+    }
+    count++;
+    return ;
+}
+
+void checkEnd (struct node *data, struct node **rear, struct node **front) {
+    struct node *current, *prev, *new;
+    current = *front;
+    prev = NULL;
+    new = (struct node *)malloc(1*sizeof(struct node));
+    new->info = data->info;
+    new->id = data->id;
+    while(current != NULL && current->info >= new->info) {
+        prev = current;
+        current = current->ptr;
+    }
+    if(prev == NULL) {
+        new->ptr = *front;
+        *front = new;
+    }
+    else {
+        prev->ptr = new;
+        *rear = new;
+    }
+    new->ptr = current;
+    return;
+}
+
+
+/* Enqueing the queue */
+void enq(struct node *data, struct node **rear, struct node **front)
+{
+    if (rear == NULL) {
+        *rear = (struct node *)malloc(1*sizeof(struct node));
+        (*rear)->ptr = NULL;
+        (*rear)->info = data->info;
+        (*rear)->id = data->id;
+        *front = *rear;
+    }
+    else {
         check(data, rear, front);
-        printf("Saiu com front depois: #%08x \n", front);
     }
     count++;
     return ;
@@ -52,12 +88,10 @@ void check(struct node *data, struct node **rear, struct node **front) {
         current = current->ptr;
     }
     if(prev == NULL) {
-        printf("Na cabeça\n");
         new->ptr = *front;
         *front = new;
     }
     else {
-        printf("No else\n");
         prev->ptr = new;
         *rear = new;
     }

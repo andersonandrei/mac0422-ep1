@@ -13,6 +13,7 @@
 #include <grp.h>
 
 #include "schedulerSJF.h"
+#include "schedulerRoudRobin.h"
 #include "structs.h"
 
 #define N 1024

@@ -8,7 +8,6 @@ void printingInfo() {
 	printf("To aqui");
 	fflush(stdout);
 	for (i = 0; i < qntProcess; i++) {
-		printf("Process %s : %f %f %f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
 	}
 }
 
@@ -29,7 +28,7 @@ void createThreads(char *name, int *qntProcess) {
 	    	process[i].t = t;
 	    	process[i].dt =  dt;
 	    	process[i].deadline = deadline;
-	    	printf("Process %s : %f %f %f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
+	    	printf("Process %s : %.2f %.2f %.2f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
 	    	cont++;
 	    	n = malloc (1024 * sizeof(char));
 	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
@@ -80,7 +79,8 @@ int main(int argc, char *argv[ ]) {
 		printf("Argumento inválido\n");
 	}
 	printf("Qnt armazenada: %d \n", qntProcess);
-	schedulerSJF(process, name, output);
+	//schedulerSJF(process, name, output);
+	schedulerRoudRobin(process, name, output);
 	//enqueueThreads(process);
 	// enqueueThreads(process);
 	// id = deq();

@@ -1,6 +1,8 @@
-#include "schedulerSJF.h"
+#include "schedulerRoudRobin.h"
 
-void enqueueThread(thr thread, struct node **rearSJF, struct node **frontSJF) {
+int prempcao = 0;
+
+void enqueueThreadRR(thr thread, struct node **rearSJF, struct node **frontSJF) {
 	struct node *p;
 	p = malloc(sizeof(struct node));
 	p->info = thread.dt;
@@ -9,7 +11,7 @@ void enqueueThread(thr thread, struct node **rearSJF, struct node **frontSJF) {
 	return;
 }
 
-void enqueueThreads(thr *process, int qntProcess, struct node **rearSJF, struct node **frontSJF) {
+void enqueueThreadsRR(thr *process, int qntProcess, struct node **rearSJF, struct node **frontSJF) {
 	int i;
 	create(rearSJF, frontSJF);
 	for (i = 0; i < qntProcess; i++) {
@@ -18,12 +20,13 @@ void enqueueThreads(thr *process, int qntProcess, struct node **rearSJF, struct 
 	return;
 }
 
-void* job(void *argument){
+void* jobRR(void *argument){
 	struct rusage ru;
-
+	float quantum = 1;
 	time_t tim = time(NULL);
 	char dateBuffer[80];
 	struct tm *tm = localtime(&tim);
+
 	time(&tim);
 	tm = localtime(&tim);
 
@@ -37,20 +40,23 @@ void* job(void *argument){
 	getrusage(RUSAGE_THREAD, &ru);
 	seconds = 0;
 	//utime = ru.ru_utime;
-	printf("\n Começou job em %.2f", clock()/(double)CLOCKS_PER_SEC);
-	while (seconds < (1 * t-> dt)) {
+	printf("\n Começou job = %s em %.2f", t->name, clock()/(double)CLOCKS_PER_SEC);
+	while (seconds < (quantum)) {
 		for (i = 0; i < 10; i++) {
 			j++;
 		}
 		getrusage(RUSAGE_THREAD, &ru);
 		seconds = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000);
 	}
-	printf("Ficou : %.2f s\n", seconds);
+	printf("Permanece aqui por : %.2f s\n", seconds);
+	printf("Ta com dt = %.2f \n", t->dt);
+	t->dt-=quantum;
+	printf("Ficou com dt = %.2f \n", t->dt);
 	printf("Saiu: ");
 	return 0;
 }
 
-void schedulerSJF(thr *process, char *name, char *output) {
+void schedulerRoudRobin(thr *process, char *name, char *output) {
 	struct node *rearSJF, *frontSJF;
 	struct rusage ru;
 	float begin, end;
@@ -58,13 +64,14 @@ void schedulerSJF(thr *process, char *name, char *output) {
 	int result_code;
 	int qntProcess;
 	int cont;
+	struct node *p;
 	//time_t begin, end;
 	rearSJF = NULL;
 	frontSJF = NULL;
 	createThreads(name, &qntProcess);
 	printf("Escalonador ------------\n");
 	//printf("No scheduler: thread %d-%s com dt: %f \n", process[0].id, process[0].name, process[0].dt);
-	enqueueThreads(process, qntProcess, &rearSJF, &frontSJF);
+	enqueueThreadsRR(process, qntProcess, &rearSJF, &frontSJF);
 	cont = qntProcess;
 	printf("Cont : %d", cont);
 	getrusage(RUSAGE_THREAD, &ru);
@@ -80,8 +87,17 @@ void schedulerSJF(thr *process, char *name, char *output) {
 		}
 		else {
 			pthread_mutex_lock(&process[id].mutex);
-			result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
+			result_code = pthread_create(&process[id].thread, NULL, &jobRR, &process[id]);
 			pthread_join(process[id].thread, NULL);
+			if (process[id].dt > 0) {
+				printf("Restou tempo pra name = %s\n", process[id].name);
+				p = malloc(sizeof(struct node));
+				p->info = process[id].dt;
+				p->id = process[id].id;
+				enq(p, &rearSJF, &frontSJF);
+				cont++;
+				prempcao++;
+			}
 			// fprintf(out, process[id].name);
 			// getrusage(RUSAGE_THREAD, &ru);
 			// utime = ru.ru_utime;
@@ -93,6 +109,7 @@ void schedulerSJF(thr *process, char *name, char *output) {
 		end = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
 			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
 		printf("Encerrou com : %.2f\n", end-begin);
+		printf("Numero de prempções: %d", prempcao);
 		//getrusage(RUSAGE_THREAD, &ru);
 		begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
 			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
