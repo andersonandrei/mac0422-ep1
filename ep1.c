@@ -1,5 +1,8 @@
 #include "ep1.h"
 
+thr *process;
+int qntProcess;
+
 void printingInfo() {
 	int i;
 	printf("To aqui");
@@ -9,7 +12,7 @@ void printingInfo() {
 	}
 }
 
-void createThreads(char *name) {
+void createThreads(char *name, int *qntProcess) {
   	FILE *arq;
   	int result;
   	int i;
@@ -31,8 +34,8 @@ void createThreads(char *name) {
 	    	n = malloc (1024 * sizeof(char));
 	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 		}
-		qntProcess = cont;
-		printf("guardei: %d\n", qntProcess);
+		*qntProcess = cont;
+		printf("guardei: %d\n", *qntProcess);
 	}
 	else {
 		printf("Nops\n");
@@ -44,7 +47,7 @@ void destroyThreads() {
 	int i;
 	for (i = 0; i < qntProcess; i++) {
 		free(process[i].name);
-		//pthread_exit();//;;(process.threads[i]);
+		//p->read_exit();//;;(process.->reads[i]);
 	}
 	free(&process[i].thread);
 	free(&process[i].name);
@@ -68,7 +71,7 @@ void executeThreads() {
 
 int main(int argc, char *argv[ ]) {
 	char *name, *output;
-	process = malloc (N * sizeof(th));
+	process = malloc (N * sizeof(thr));
 	if(argc == 3) {
 		name = argv[1];
 		output = argv[2];

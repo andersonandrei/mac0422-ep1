@@ -1,14 +1,13 @@
 CC:=gcc
 CFLAGS:=-Wall -g -lpthread
 
-ep1: ep1.o ep1sh.o schedularSJF.o queue.o
+ep1: ep1.o schedulerSJF.o queue.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 ep1sh: ep1sh.o schedularSJF.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 #General formulas for making objects
-
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 

@@ -1,4 +1,6 @@
-void enqueueThread(th thread) {
+#include "schedulerSJF.h"
+
+void enqueueThread(thr thread) {
 	struct node *p;
 	p = malloc(sizeof(struct node));
 	p->info = thread.dt;
@@ -8,7 +10,7 @@ void enqueueThread(th thread) {
 	return;
 }
 
-void enqueueThreads(th *process) {
+void enqueueThreads(thr *process, int qntProcess) {
 	int i;
 	create();
 	for (i = 0; i < qntProcess; i++) {
@@ -23,7 +25,7 @@ void* job(void *argument){
 	struct timeval utime;
 	float seconds = 0; 
 	int i, j;
-	th *t = (th *) argument;
+	thr *t = (thr *) argument;
 	printf("Dentro do processo: thread %d-%s com dt: %f \n", t->id, t->name, t->dt);
 	getrusage(RUSAGE_THREAD, &ru);
 	utime = ru.ru_utime;
@@ -40,18 +42,19 @@ void* job(void *argument){
 	return 0;
 }
 
-void schedulerSJF(th *process, char *name, char *output) {
+void schedulerSJF(thr *process, char *name, char *output) {
 	struct rusage ru;;
 	float begin, end;
 	int id;
 	int result_code;
-	int cont = qntProcess;
+	int qntProcess;
+	int cont;
 	//time_t begin, end;
-	createThreads(name);
-	cont = qntProcess;
+	createThreads(name, &qntProcess);
 	printf("Escalonador ------------\n");
 	//Xprintf("No scheduler: thread %d-%s com dt: %f \n", process[0].id, process[0].name, process[0].dt);
-	enqueueThreads(process);
+	enqueueThreads(process, qntProcess);
+	cont = qntProcess;
 	printf("Cont : %d", cont);
 	getrusage(RUSAGE_THREAD, &ru);
 	begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +

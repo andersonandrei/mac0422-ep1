@@ -1,5 +1,7 @@
-#ifndef STRUCTS_H
-#define STRCUTS_H
+#ifndef TYPES_H
+#define TYPES_H
+
+#include <pthread.h>
 
 typedef struct {
 	int id;
@@ -7,16 +9,14 @@ typedef struct {
 	float t, dt, deadline;
 	pthread_t thread;
 	pthread_mutex_t mutex;
-} th;
-th *process;
+} thr;
 
 typedef struct {
-  char **text;
-  int qnt;
+	char **text;
+	int qnt;
 } input;
 
-struct node
-{
+struct node {
     int id;
     float info;
     struct node *ptr;
