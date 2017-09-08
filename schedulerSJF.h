@@ -25,9 +25,9 @@
 #include "queue.h"
 #include "ep1.h"
 
-void enqueueThread(thr thread);
+void enqueueThread(thr thread, struct node **rearSJF, struct node **frontSJF);
 
-void enqueueThreads(thr *process, int qntProcess);
+void enqueueThreads(thr *process, int qntProcess, struct node **rearSJF, struct node **frontSJF);
 
 void* job(void *argument);
 

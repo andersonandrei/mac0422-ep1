@@ -5,15 +5,14 @@
 #include <stdlib.h>
 #include "structs.h"
 
-void create();
-void enq(struct node *data);
-int deq();
-void empty();
-void display();
+void create (struct node **rear, struct node **front);
+/* Returns queue size */
 int queuesize();
-int frontelement();
-//int main();
-void check(struct node *data);
-void removeAll();
+/* Enqueing the queue */
+void enq(struct node *data, struct node **rear, struct node **front);
+void check(struct node *data, struct node **rear, struct node **front);
+/* Dequeing the queue */
+int deq(struct node **rear, struct node **front);
+
 
 #endif

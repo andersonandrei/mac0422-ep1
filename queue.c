@@ -1,43 +1,48 @@
 /*
  * C Program to Implement Queue Data Structure using Linked List
  */
+/*
+ * C Program to Implement Queue Data Structure using Linked List
+ */
 #include "queue.h"
 
 int count = 0;
 
 /* Create an empty queue */
-void create() {
+void create (struct node **rear, struct node **front) {
     front = rear = NULL;
 }
-
+ 
 /* Returns queue size */
-int queuesize()
-{
+int queuesize() {
     return count;
 }
 
 /* Enqueing the queue */
-void enq(struct node *data)
+void enq(struct node *data, struct node **rear, struct node **front)
 {
+    printf("front entrou: #%08x\n " , front);
     if (rear == NULL) {
         printf("Colocou no inicio\n");
-        rear = (struct node *)malloc(1*sizeof(struct node));
-        rear->ptr = NULL;
-        rear->info = data->info;
-        rear->id = data->id;
-        front = rear;
+        *rear = (struct node *)malloc(1*sizeof(struct node));
+        (*rear)->ptr = NULL;
+        (*rear)->info = data->info;
+        (*rear)->id = data->id;
+        *front = *rear;
+        printf("Saiu com front: #%08x \n", front);
     }
-    else
-    {
+    else {
         printf("Colocou depois\n");
-        check(data);
+        check(data, rear, front);
+        printf("Saiu com front depois: #%08x \n", front);
     }
     count++;
+    return ;
 }
 
-void check(struct node *data) {
+void check(struct node *data, struct node **rear, struct node **front) {
     struct node *current, *prev, *new;
-    current = front;
+    current = *front;
     prev = NULL;
     new = (struct node *)malloc(1*sizeof(struct node));
     new->info = data->info;
@@ -48,45 +53,25 @@ void check(struct node *data) {
     }
     if(prev == NULL) {
         printf("Na cabeça\n");
-        new->ptr = front;
-        front = new;
+        new->ptr = *front;
+        *front = new;
     }
     else {
         printf("No else\n");
         prev->ptr = new;
-        rear = new;
+        *rear = new;
     }
     new->ptr = current;
     return;
 }
 
-/* Displaying the queue elements */
-void display()
-{
-    printf("Qnt: %d\n", queuesize());
-    front1 = front;
-    if ((front1 == NULL) && (rear == NULL))
-    {
-        printf("Queue is empty\n");
-        return;
-    }
-    while (front1->ptr != NULL)
-    {
-        printf("%d \n", front1->id);
-        front1 = front1->ptr;
-    }
-    if (front1->ptr == NULL) {
-        printf("ultimo ");
-        printf("%d\n\n", front1->id);
-    }
-}
 
 /* Dequeing the queue */
-int deq()
+int deq(struct node **rear, struct node **front)
 {
     int id;
     struct node *current, *prev;
-    current = front;
+    current = *front;
     prev = NULL;
     while(current->ptr != NULL) {
         prev = current;
@@ -106,30 +91,4 @@ int deq()
         count--;
         return id;
     }
-
-   
-}
-
-void removeAll() {
-    while(queuesize > 0) {
-        printf("Desempilhou: %d\n", deq());
-    }
-}
-
-/* Returns the front element of queue */
-int frontelement()
-{
-    if ((front != NULL) && (rear != NULL))
-        return(front->info);
-    else
-        return 0;
-}
- 
-/* Display if queue is empty or not */
-void empty()
-{
-     if ((front == NULL) && (rear == NULL))
-        printf("\n Queue empty");
-    else
-       printf("Queue not empty");
 }

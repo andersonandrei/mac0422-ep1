@@ -1,21 +1,21 @@
 #include "schedulerSJF.h"
 
-void enqueueThread(thr thread) {
+void enqueueThread(thr thread, struct node **rearSJF, struct node **frontSJF) {
 	struct node *p;
 	p = malloc(sizeof(struct node));
 	p->info = thread.dt;
 	p->id = thread.id;
 	printf("Empilhando espec %d - %f\n", p->id, p->info);
-	enq(p);
+	enq(p, rearSJF, frontSJF);
 	return;
 }
 
-void enqueueThreads(thr *process, int qntProcess) {
+void enqueueThreads(thr *process, int qntProcess, struct node **rearSJF, struct node **frontSJF) {
 	int i;
-	create();
+	create(rearSJF, frontSJF);
 	for (i = 0; i < qntProcess; i++) {
 		printf("----Empilhando %d - %s com dt: %f\n", i, process[i].name, process[i].dt);
-		enqueueThread(process[i]);
+		enqueueThread(process[i], rearSJF, frontSJF);
 	}
 	return;
 }
@@ -43,26 +43,30 @@ void* job(void *argument){
 }
 
 void schedulerSJF(thr *process, char *name, char *output) {
-	struct rusage ru;;
+	struct node *rearSJF, *frontSJF;
+	struct rusage ru;
 	float begin, end;
 	int id;
 	int result_code;
 	int qntProcess;
 	int cont;
 	//time_t begin, end;
+	rearSJF = NULL;
+	frontSJF = NULL;
 	createThreads(name, &qntProcess);
 	printf("Escalonador ------------\n");
 	//Xprintf("No scheduler: thread %d-%s com dt: %f \n", process[0].id, process[0].name, process[0].dt);
-	enqueueThreads(process, qntProcess);
+	enqueueThreads(process, qntProcess, &rearSJF, &frontSJF);
 	cont = qntProcess;
 	printf("Cont : %d", cont);
 	getrusage(RUSAGE_THREAD, &ru);
 	begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
 			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
+
 	//out = fopen(output, "w");
 	//begin = clock();
 	while (cont > 0) {
-		id = deq();
+		id = deq(&rearSJF, &frontSJF);
 		printf("Iniciou com %f\n", begin);
 		printf("Desempilhou %d agr ta com tamanho: %d\n", id, queuesize());
 		if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
