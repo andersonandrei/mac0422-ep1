@@ -1,5 +1,5 @@
-#ifndef EP1
-#define EP1
+#ifndef EP1_H
+#define EP1_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,18 +14,10 @@
 #include <grp.h>
 
 #include "schedulerSJF.h"
+#include "structs.h"
 
 #define N 1024
 
-typedef struct {
-	int id;
-	char *name;
-	float t, dt, deadline;
-	pthread_t thread;
-	pthread_mutex_t mutex;
-} th;
-
-th *process;
 int qntProcess;
 
 void printingInfo();

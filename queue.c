@@ -1,7 +1,6 @@
 /*
  * C Program to Implement Queue Data Structure using Linked List
  */
-
 #include "queue.h"
 
 int count = 0;
@@ -10,7 +9,7 @@ int count = 0;
 void create() {
     front = rear = NULL;
 }
- 
+
 /* Returns queue size */
 int queuesize()
 {
@@ -81,39 +80,6 @@ void display()
         printf("%d\n\n", front1->id);
     }
 }
-
-/* Dequeing the queue */
-/*int deq() {
-    int id;
-    struct node *current, *prev;
-    current = front;
-    prev = NULL;
-    printf("current: #%08x\n", current);
-    while(current->ptr != NULL) {
-        prev = current;
-        current = current->ptr;
-    }
-    printf("prev: #%08x\n", prev);
-    if(current != NULL) {
-        printf("\n ta no if");
-        fflush(stdout);
-        id = current->id;
-        printf("\n ta no if 2");
-        fflush(stdout);
-        //current = NULL;
-        printf("\n ta no if 3");
-        fflush(stdout);
-        count--;
-        prev->ptr = NULL;
-        
-        return id;
-    }
-    else {
-        fflush(stdout);
-        printf("Ta vazio\n");
-        return -1;
-    }
-}*/
 
 /* Dequeing the queue */
 int deq()

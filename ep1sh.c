@@ -107,8 +107,7 @@ void* oi(void* argument){
   return 0;
 }
 
-void* perform_work(int i)
-{
+void* perform_work(int i){
   //pthread_mutex_lock(&mutex1);
   printf( "Hello World! It's me, thread with argument %d!\n", i );
   //pthread_mutex_unlock(&mutex1);
@@ -157,8 +156,7 @@ void usingThreads(int NUM_THREADS) {
 }
 
 
-int main ()
-{
+int main (){
   using_history();
   input inp;
   char *in;

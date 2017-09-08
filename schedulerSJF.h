@@ -1,5 +1,5 @@
-#ifndef SCHEDULERSJF
-#define SCHEDULERSJF
+#ifndef SCHEDULERSJF_H
+#define SCHEDULERSJF_H
 
 #include <time.h>
 #define __USE_GNU
@@ -11,7 +11,7 @@
 #include <semaphore.h>
 
 #include <sys/queue.h>
-#include "queue.h"
+#include "structs.h"
 
 void enqueueThread(th thread);
 

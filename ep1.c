@@ -89,7 +89,5 @@ int main(int argc, char *argv[ ]) {
 	//executeThreads(&process);
 	//printingInfo(process);
 	//destroyThreads(process);
-
-
 	return 0;
 }

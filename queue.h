@@ -1,16 +1,10 @@
-#ifndef QUEUE
-#define QUEUE
+#ifndef QUEUE_H
+#define QUEUE_H
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "structs.h"
 
-struct node
-{
-    int id;
-    float info;
-    struct node *ptr;
-} *front,*rear,*temp,*front1;
- 
 void create();
 void enq(struct node *data);
 int deq();

@@ -1,9 +1,8 @@
 /*	EP1 - MAC0422 
 	Shell + Gerenciados de processos
 */
-
-#ifndef EP1SH
-#define EP1SH
+#ifndef EP1SH_H
+#define EP1SH_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,16 +22,7 @@
 #include <assert.h>
 #include <semaphore.h>
 
-//#include <ep1.c>
-
-pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex3 = PTHREAD_MUTEX_INITIALIZER;
-
-typedef struct {
-  char **text;
-  int qnt;
-} input;
+#include "strcuts.h"
 
 /* Receive a struct input and a readline 'in',
    split the 'in' and save in the input table

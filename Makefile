@@ -1,20 +1,21 @@
-all: ep1 ep1sh
+CC:=gcc
+CFLAGS:=-Wall -g -lpthread
 
-queue.o: queue.c
-	gcc -Wall -g -c -o queue.o queue.c	
+ep1: ep1.o ep1sh.o schedularSJF.o queue.o
+	$(CC) $(CFLAGS) -o $@ $^
 
-ep1: ep1.o queue.o
-	gcc -g -lreadline -pthread -o ep1 ep1.o queue.o
+ep1sh: ep1sh.o schedularSJF.o
+	$(CC) $(CFLAGS) -o $@ $^
 
-ep1.o: ep1.c queue.h
-	gcc -Wall -g -c -o ep1.o ep1.c
+#General formulas for making objects
 
-ep1sh: ep1sh.o
-	gcc -g -lreadline -pthread -o ep1sh ep1sh.o
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-ep1sh.o : ep1sh.c
-	gcc -Wall -g -c -o ep1sh.o ep1sh.c
+%.o: %.c %.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 clean:
-	rm -rf *.o
+	rm *.o
 	rm ep1sh
 	rm ep1
