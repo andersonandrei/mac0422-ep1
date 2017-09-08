@@ -2,8 +2,6 @@
 	Shell + Gerenciados de processos
 */
 
-#include "ep1sh.h"
-
 typedef struct {
   char **text;
   int qnt;

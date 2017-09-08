@@ -1,6 +1,3 @@
-/* Scheduler SJF*/
-#include "schedulerSJF.h"
-
 void enqueueThread(th thread) {
 	struct node *p;
 	p = malloc(sizeof(struct node));
@@ -30,7 +27,7 @@ void* job(void *argument){
 	printf("Dentro do processo: thread %d-%s com dt: %f \n", t->id, t->name, t->dt);
 	getrusage(RUSAGE_THREAD, &ru);
 	utime = ru.ru_utime;
-	printf("Peguei o time : %ld e %ld \n", utime.tv_sec, utime.tv_usec);
+	//printf("Iniciou processamento : %ld \n", ru.ru_utime.tv_sec + ru.ru_utime.tv_usec);
 	while (seconds < (1 * t-> dt)) {
 		for (i = 0; i < 10; i++) {
 			j++;
@@ -43,19 +40,27 @@ void* job(void *argument){
 	return 0;
 }
 
-void schedulerSJF(th *process, char *name) {
+void schedulerSJF(th *process, char *name, char *output) {
+	struct rusage ru;;
+	float begin, end;
 	int id;
 	int result_code;
 	int cont = qntProcess;
+	//time_t begin, end;
 	createThreads(name);
 	cont = qntProcess;
 	printf("Escalonador ------------\n");
 	//Xprintf("No scheduler: thread %d-%s com dt: %f \n", process[0].id, process[0].name, process[0].dt);
 	enqueueThreads(process);
 	printf("Cont : %d", cont);
+	getrusage(RUSAGE_THREAD, &ru);
+	begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
+			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
+	//out = fopen(output, "w");
+	//begin = clock();
 	while (cont > 0) {
-		printf("No while \n");
 		id = deq();
+		printf("Iniciou com %f\n", begin);
 		printf("Desempilhou %d agr ta com tamanho: %d\n", id, queuesize());
 		if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
 			printf("Erro ao criar\n");
@@ -65,8 +70,20 @@ void schedulerSJF(th *process, char *name) {
 			pthread_mutex_lock(&process[id].mutex);
 			result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
 			pthread_join(process[id].thread, NULL);
+			// fprintf(out, process[id].name);
+			// getrusage(RUSAGE_THREAD, &ru);
+			// utime = ru.ru_utime;
+			// fputc(tim1, out);
+			// fputc(time2, out);
 			pthread_mutex_unlock(&process[id].mutex);
 		}
+		//getrusage(RUSAGE_THREAD, &ru);
+		end = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
+			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
+		printf("Encerrou com : %f\n", end-begin);
+		//getrusage(RUSAGE_THREAD, &ru);
+		begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
+			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
 		cont--;
 	}
 }

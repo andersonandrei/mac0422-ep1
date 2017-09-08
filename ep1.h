@@ -1,4 +1,3 @@
-/* ep1 Functions */
 #ifndef EP1
 #define EP1
 
@@ -12,17 +11,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include <sys/types.h>
 #include <grp.h>
-#include <time.h>
-
-#include <pthread.h>
-#include <assert.h>
-#include <semaphore.h>
-
-#define __USE_GNU
-#include <sys/time.h>
-#include <sys/resource.h>
 
 #include "schedulerSJF.h"
 
@@ -45,6 +34,17 @@ void createThreads(char *name);
 
 void destroyThreads();
 
+void executeThreads();
+
+void enqueueThread(th thread);
+
+void enqueueThreads(th *process);
+
+void* job(void *argument);
+
+void schedulerSJF(th *process, char *name, char *output);
+
 int main(int argc, char *argv[ ]);
+
 
 #endif

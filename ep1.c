@@ -1,5 +1,3 @@
-/* ep1 main */
-
 #include "ep1.h"
 
 void printingInfo() {
@@ -21,11 +19,10 @@ void createThreads(char *name) {
   	arq = fopen(name, "rt");
 	if (arq != NULL) {
 		result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
-		for (i = 0; result != EOF; i++){ 
-			printf("Leu %s : %f %f %f\n", n, t, dt, deadline);
+		for (i = 0; result != EOF; i++){
+			fprintf(stderr, "Processo inserido no siste: %s - linha : %d\n", n, i);
 			process[i].id = i;
 	    	process[i].name = n;
-	    	printf("------ Colocnado em i: %d, o nome : %s\n", i, n);
 	    	process[i].t = t;
 	    	process[i].dt =  dt;
 	    	process[i].deadline = deadline;
@@ -56,17 +53,31 @@ void destroyThreads() {
 	free(&process[i].deadline);
 } 
 
+void executeThreads() {
+  	struct timeval tv;
+  	//time_t seconds;
+  	int i;
+ 	gettimeofday(&tv, NULL); 
+ 	printf("%ld\n" ,tv.tv_sec);
+ 	printf("qnt: %d" , qntProcess);
+ 	for (i = 0; i < qntProcess; i++) {
+ 		printf("Thread : %s\n", process[i].name);
+ 		pthread_join(process[i].thread, NULL);
+ 	}
+}
+
 int main(int argc, char *argv[ ]) {
-	char *name;
+	char *name, *output;
 	process = malloc (N * sizeof(th));
-	if(argc == 2) {
+	if(argc == 3) {
 		name = argv[1];
+		output = argv[2];
 	}
 	else {
 		printf("Argumento inválido\n");
 	}
 	printf("Qnt armazenada: %d \n", qntProcess);
-	schedulerSJF(process, name);
+	schedulerSJF(process, name, output);
 	//enqueueThreads(process);
 	// enqueueThreads(process);
 	// id = deq();

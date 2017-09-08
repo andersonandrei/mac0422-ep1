@@ -23,6 +23,12 @@
 #include <assert.h>
 #include <semaphore.h>
 
+//#include <ep1.c>
+
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex3 = PTHREAD_MUTEX_INITIALIZER;
+
 typedef struct {
   char **text;
   int qnt;
@@ -63,8 +69,6 @@ void internCalls (input inp);
    do the call (external or intern).
 */
 void calls (input inp);
-
-void* oi(void* argument);
 
 void* perform_work(int i);
 
