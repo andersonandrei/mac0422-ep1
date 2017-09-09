@@ -27,7 +27,7 @@
 
 void* job(void *argument);
 
-void schedulerSJF(thr *process, char *name, char *output);
+void schedulerSJF(thr *process, char *name, char *output, char *d);
 
 /*while (cont > 0) {
 			printf("Executou\n");

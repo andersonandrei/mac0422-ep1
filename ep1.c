@@ -96,18 +96,19 @@ void enqueueThreads(thr *process, int qntProcess, struct node **rear, struct nod
 }
 
 int main(int argc, char *argv[ ]) {
-	char *name, *output;
+	char *name, *output, *d;
 	process = malloc (N * sizeof(thr));
-	if(argc == 3) {
+	if(argc >= 3) {
 		name = argv[1];
 		output = argv[2];
+		if (argc == 4)
+			d = argv[3];
 	}
 	else {
 		printf("Argumento inválido\n");
 	}
-
 	printf("Qnt armazenada: %d \n", qntProcess);
-	schedulerSJF(process, name, output);
+	schedulerSJF(process, name, output, d);
 	//schedulerRoudRobin(process, name, output);
 	
 	//enqueueThreads(process);
