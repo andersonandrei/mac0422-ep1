@@ -28,6 +28,7 @@ int queuesize(struct node *rear, struct node *front) {
 }
 
 /* Enqueing the queue */
+/*
 void enqEnd (struct node *data, struct node **rear, struct node **front)
 {
     if (rear == NULL) {
@@ -51,7 +52,7 @@ void checkEnd (struct node *data, struct node **rear, struct node **front) {
     new = (struct node *)malloc(1*sizeof(struct node));
     new->info = data->info;
     new->id = data->id;
-    while(current != NULL && current->info >= new->info) {
+    while(current != NULL) {
         prev = current;
         current = current->ptr;
     }
@@ -65,7 +66,8 @@ void checkEnd (struct node *data, struct node **rear, struct node **front) {
     }
     new->ptr = current;
     return;
-}
+}*/
+
 
 
 /* Enqueing the queue */
@@ -105,6 +107,26 @@ void check(struct node *data, struct node **rear, struct node **front) {
         *rear = new;
     }
     new->ptr = current;
+    return;
+}
+
+void enqEnd(struct node *data, struct node **rear, struct node **front)
+{
+    struct node *new;
+    new = (struct node *)malloc(1*sizeof(struct node));
+    new->info = data->info;
+    new->id = data->id;
+    if (rear == NULL) {
+        *rear = (struct node *)malloc(1*sizeof(struct node));
+        (*rear)->ptr = NULL;
+        (*rear)->info = data->info;
+        (*rear)->id = data->id;
+        *front = *rear;
+    }
+    else {
+        new->ptr = *front;
+        (*front) = new;
+    }
     return;
 }
 

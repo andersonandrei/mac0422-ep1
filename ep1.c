@@ -68,6 +68,33 @@ void executeThreads() {
  	}
 }
 
+void enqueueThreadDt(thr thread, struct node **rear, struct node **front) {
+	struct node *p;
+	p = malloc(sizeof(struct node));
+	p->info = thread.dt;
+	p->id = thread.id;
+	enq(p, rear, front);
+	return;
+}
+
+void enqueueThreadT(thr thread, struct node **rear, struct node **front) {
+	struct node *p;
+	p = malloc(sizeof(struct node));
+	p->info = thread.t;
+	p->id = thread.id;
+	enq(p, rear, front);
+	return;
+}
+
+void enqueueThreads(thr *process, int qntProcess, struct node **rear, struct node **front) {
+	int i;
+	create(rear, front);
+	for (i = 0; i < qntProcess; i++) {
+		enqueueThreadT(process[i], rear, front);
+	}
+	return;
+}
+
 int main(int argc, char *argv[ ]) {
 	char *name, *output;
 	process = malloc (N * sizeof(thr));

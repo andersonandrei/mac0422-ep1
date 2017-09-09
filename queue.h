@@ -10,7 +10,9 @@ void create (struct node **rear, struct node **front);
 int queuesize();
 /* Enqueing the queue */
 void enq(struct node *data, struct node **rear, struct node **front);
+void enqEnd(struct node *data, struct node **rear, struct node **front);
 void check(struct node *data, struct node **rear, struct node **front);
+void checkEnd (struct node *data, struct node **rear, struct node **front);
 /* Dequeing the queue */
 int deq(struct node **rear, struct node **front);
 

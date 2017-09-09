@@ -26,6 +26,12 @@ void destroyThreads();
 
 void executeThreads();
 
+void enqueueThreadDt(thr thread, struct node **rear, struct node **front);
+
+void enqueueThreadT(thr thread, struct node **rear, struct node **front);
+
+void enqueueThreads(thr *process, int qntProcess, struct node **rear, struct node **front);
+
 int main(int argc, char *argv[ ]);
 
 

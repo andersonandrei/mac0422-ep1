@@ -25,12 +25,6 @@
 #include "queue.h"
 #include "ep1.h"
 
-void enqueueThreadDt(thr thread, struct node **rearSJF, struct node **frontSJF);
-
-void enqueueThreadT(thr thread, struct node **rearSJF, struct node **frontSJF);
-
-void enqueueThreads(thr *process, int qntProcess, struct node **rearSJF, struct node **frontSJF);
-
 void* job(void *argument);
 
 void schedulerSJF(thr *process, char *name, char *output);
