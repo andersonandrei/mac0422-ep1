@@ -78,9 +78,11 @@ int main(int argc, char *argv[ ]) {
 	else {
 		printf("Argumento inválido\n");
 	}
+
 	printf("Qnt armazenada: %d \n", qntProcess);
-	//schedulerSJF(process, name, output);
-	schedulerRoudRobin(process, name, output);
+	schedulerSJF(process, name, output);
+	//schedulerRoudRobin(process, name, output);
+	
 	//enqueueThreads(process);
 	// enqueueThreads(process);
 	// id = deq();

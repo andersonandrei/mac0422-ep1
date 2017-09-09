@@ -15,7 +15,7 @@ void enqueueThreadsRR(thr *process, int qntProcess, struct node **rearSJF, struc
 	int i;
 	create(rearSJF, frontSJF);
 	for (i = 0; i < qntProcess; i++) {
-		enqueueThread(process[i], rearSJF, frontSJF);
+		enqueueThreadRR(process[i], rearSJF, frontSJF);
 	}
 	return;
 }

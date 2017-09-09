@@ -14,8 +14,17 @@ void create (struct node **rear, struct node **front) {
 }
  
 /* Returns queue size */
-int queuesize() {
-    return count;
+int queuesize(struct node *rear, struct node *front) {
+    int qnt = 0;
+    struct node *current, *prev;
+    current = front;
+    prev = NULL;
+    while(current != NULL) {
+        prev = current;
+        current = current->ptr;
+        qnt++;
+    }
+    return qnt;
 }
 
 /* Enqueing the queue */
@@ -118,9 +127,12 @@ int deq(struct node **rear, struct node **front)
         id = current->id;
         if(prev == NULL) {
             current = NULL;
+            *front = *rear = NULL;
         }
         else {
+            current = NULL;
             prev->ptr = NULL;
+            *rear = prev;
         }
         count--;
         return id;
