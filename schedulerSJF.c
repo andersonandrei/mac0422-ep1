@@ -58,19 +58,22 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	printf("\n Size: %d\n", queuesize(rearPool, frontPool));
 	out = fopen(output, "w");
 	control = queuesize(rearPool, frontPool);
+	cont = 0;
 	while (queuesize(rearPool, frontPool) > 0 || control > 0) {
+
 		if (empty) {
 			printf("Empty\n");
-			return;
+			//return;
 		}
-		if (i == 0) {
+		if (i == 0 && !empty) {
+			printf("Pegou no i = 0\n");
 			verif = deq(&rearPool, &frontPool);
 			i = 1;
 		}
 		gettimeofday(&tv, NULL);
 		running = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
 		//running = 0;
-		cont = 0;
+		//cont = 0;
 		//b = 0;
 		while (process[verif].t <= (running-b) && !empty) {
 			if (verbose) printf(">> Processo %s recebido no sistema\n", process[verif].name);
@@ -92,7 +95,9 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 		*/
 		gettimeofday(&tv, NULL);
 		begin = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
-		while (cont > 0) {
+		//while (cont > 0) {
+		if (cont > 0) {
+			printf("Tem coisa na oficial\n");
 			id = deq(&rearSJF, &frontSJF);
 			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
 				printf("Erro ao criar\n");
