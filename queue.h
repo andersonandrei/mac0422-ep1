@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "structs.h"
+#include "mainData.h"
 
 void create (struct node **rear, struct node **front);
 /* Returns queue size */

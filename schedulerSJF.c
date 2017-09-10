@@ -22,7 +22,7 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	struct node *rearSJF, *frontSJF;
 	struct node *rearPool, *frontPool;
 	struct rusage ru;
-	float begin, end, running, b;
+	//float begin, end, running, b;
 	int id;
 	int result_code;
 	int qntProcess;
@@ -33,7 +33,12 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	int control;
 	int prempcao = 0;
 	int linePrinted = 0;
-	int verbose;
+	int verbose;  
+	char buffer[30];
+	struct timeval tv;
+	float ti;
+	time_t curtime , running, begin, end;
+	time_t b;
 
 	printf(" Aqui %c e %d\n", d[0], d[0]);
 	if (d[0] == 100) verbose = 1;
@@ -46,9 +51,9 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	printf("Escalonador ------------\n");
 	enqueueThreads(process, qntProcess, &rearPool, &frontPool); //created the pool
 	printf("Cont : %d", qntProcess);
-	getrusage(RUSAGE_THREAD, &ru); //start the time
-	b = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
-			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
+
+	gettimeofday(&tv, NULL);
+	b = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
 	i = 0;
 	printf("\n Size: %d\n", queuesize(rearPool, frontPool));
 	out = fopen(output, "w");
@@ -62,10 +67,11 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 			verif = deq(&rearPool, &frontPool);
 			i = 1;
 		}
-		getrusage(RUSAGE_THREAD, &ru);
-		running = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
-			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
+		gettimeofday(&tv, NULL);
+		running = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
+		//running = 0;
 		cont = 0;
+		//b = 0;
 		while (process[verif].t <= (running-b) && !empty) {
 			if (verbose) printf(">> Processo %s recebido no sistema\n", process[verif].name);
 			i = 0;
@@ -80,9 +86,12 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				empty = 1;
 			}
 		}
-		getrusage(RUSAGE_SELF, &ru); //start the time
+		/*getrusage(RUSAGE_SELF, &ru); //start the time
 		begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
 			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
+		*/
+		gettimeofday(&tv, NULL);
+		begin = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
 		while (cont > 0) {
 			id = deq(&rearSJF, &frontSJF);
 			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
@@ -99,11 +108,10 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				fprintf(out, "%s ", process[id].name);
 				pthread_mutex_unlock(&process[id].mutex);
 			}
-			getrusage(RUSAGE_SELF, &ru);
-			end = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
-				ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
-			printf("Begin com : %.2f e encerrou com : %.2f\n", begin, end);
-			fprintf(out, "%.2f %.2f \n", end, end-begin);
+			gettimeofday(&tv, NULL);
+			end = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
+			printf("Begin com : %.2ld e encerrou com : %.2ld\n", begin-b, end-b);
+			fprintf(out, "%.2ld %.2ld \n", end-b, end-begin);
 			linePrinted++;
 			cont--;
 			control--;

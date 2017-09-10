@@ -1,16 +1,13 @@
-//#ifndef TYPES_H
-//#define TYPES_H
-
-#ifndef MAINDATA_H
-#define MAINDATA_H
+#ifndef TYPES_H
+#define TYPES_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 //current dir
 #include <unistd.h>
-#include <readline/readline.h>
 #include <readline/history.h>
+#include <readline/readline.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>

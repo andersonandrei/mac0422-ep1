@@ -108,9 +108,9 @@ int main(int argc, char *argv[ ]) {
 		printf("Argumento inválido\n");
 	}
 	printf("Qnt armazenada: %d \n", qntProcess);
-	//schedulerSJF(process, name, output, d);
+	schedulerSJF(process, name, output, d);
 	//schedulerRoudRobin(process, name, output, d);
-	schedulerPriority(process, name, output, d);
+	//schedulerPriority(process, name, output, d);
 	
 	//enqueueThreads(process);
 	// enqueueThreads(process);

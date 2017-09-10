@@ -15,13 +15,11 @@
 #define __USE_GNU
 #include <sys/time.h>
 #include <sys/resource.h>
-
 #include <pthread.h>
 #include <assert.h>
 #include <semaphore.h>
-
 #include <sys/queue.h>
-#include "structs.h"
+#include "mainData.h"
 #include "queue.h"
 #include "ep1.h"
 

@@ -4,32 +4,17 @@
 #ifndef EP1SH_H
 #define EP1SH_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-//current dir
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <grp.h>
-#include <time.h>
-
-#include <pthread.h>
-#include <assert.h>
-#include <semaphore.h>
-
-#include "strcuts.h"
+#include "ep1.h"
+#include "mainData.h"
+#include "schedulerSJF.h"
+#include "schedulerRoudRobin.h"
+#include "schedulerPriority.h"
 
 /* Receive a struct input and a readline 'in',
    split the 'in' and save in the input table
    of words, couting this. */
 
 void mysplit(char *in, input *inp);
-
 /* Receive the input, and do the external
    call, using the fork() and execve().
    Here, our implementation do any external
@@ -63,7 +48,6 @@ void calls (input inp);
 void* perform_work(int i);
 
 void usingThreads(int NUM_THREADS);
-
 
 int main ();
 
