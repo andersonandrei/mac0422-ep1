@@ -1,6 +1,19 @@
-#include "schedulerRoudRobin.h"
+#include "schedulerPriority.h"
 
-void* jobRR(void *argument){
+int prempcaoP = 0;
+
+/*int calcQuantum (int t, int dt, int deadline) {
+	int quantum;
+	quantum = deadline - (t + dt);
+	quantum = (quantum/1000) + 100;
+	return quantum;
+}*/
+
+float calcQuantum (float t) {
+	return t+(t*0.5);
+}
+
+void* jobP(void *argument){
 	struct rusage ru;
 	float quantum = 1;
 
@@ -11,7 +24,8 @@ void* jobRR(void *argument){
 	getrusage(RUSAGE_THREAD, &ru);
 	seconds = 0;
 	//utime = ru.ru_utime;
-	while (seconds < (quantum)) {
+
+	while (seconds < (calcQuantum(t->t))) {
 		for (i = 0; i < 10; i++) {
 			j++;
 		}
@@ -22,9 +36,9 @@ void* jobRR(void *argument){
 	return 0;
 }
 
-void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
+void schedulerPriority(thr *process, char *name, char *output, char *d) {
 	FILE *out;
-	struct node *rearRR, *frontRR;
+	struct node *rearP, *frontP;
 	struct node *rearPool, *frontPool;
 	struct node *p;
 	struct rusage ru;
@@ -45,8 +59,8 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 	if (d[0] == 100) verbose = 1;
 	rearPool = NULL;
 	frontPool = NULL;
-	rearRR = NULL;
-	frontRR = NULL;
+	rearP = NULL;
+	frontP = NULL;
 	createThreads(name, &qntProcess);
 
 	printf("Escalonador ------------\n");
@@ -78,7 +92,7 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 		while (process[verif].t <= (running-b) && !empty) {
 			i = 0;
 			if (verbose) printf(">> Processo %s recebido no sistema\n", process[verif].name);
-			enqueueThreadDt(process[verif], &rearRR, &frontRR);
+			enqueueThreadDt(process[verif], &rearP, &frontP);
 			cont++;
 			if (queuesize(rearPool, frontPool) > 0) {
 				verif = deq(&rearPool, &frontPool);
@@ -93,11 +107,12 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 		begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
 			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
 		while (cont > 0) {
-			id = deq(&rearRR, &frontRR);
+			id = deq(&rearP, &frontP);
 			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
 				printf("Erro ao criar\n");
 			}
 			else {
+				printf("Quantum: %f\n", (calcQuantum(process[id].t)));
 				if (verbose) printf(">> Processo %s utilizando a CPU: 0. \n", process[id].name);
 				pthread_mutex_lock(&process[id].mutex);
 				result_code = pthread_create(&process[id].thread, NULL, &jobRR, &process[id]);
@@ -117,7 +132,7 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 					p->info = process[id].dt;
 					p->id = process[id].id;
 					p->ptr = NULL;
-					enq(p, &rearRR, &frontRR);
+					enq(p, &rearP, &frontP);
 					cont++;
 					control++;
 					prempcao++;

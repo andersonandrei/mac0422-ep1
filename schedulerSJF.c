@@ -35,10 +35,6 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	int linePrinted = 0;
 	int verbose;
 
-	time_t tim = time(NULL);
-	char dateBuffer[80];
-	struct tm *tm = localtime(&tim);
-
 	printf(" Aqui %c e %d\n", d[0], d[0]);
 	if (d[0] == 100) verbose = 1;
 	rearPool = NULL;
@@ -101,7 +97,6 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				if (verbose) printf(">> Processo %s finalizado. Escrevendo na linha %d do arquivo %s.\n", 
 					process[id].name, linePrinted, output);
 				fprintf(out, "%s ", process[id].name);
-
 				pthread_mutex_unlock(&process[id].mutex);
 			}
 			getrusage(RUSAGE_SELF, &ru);

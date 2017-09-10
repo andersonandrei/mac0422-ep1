@@ -1,5 +1,5 @@
-#ifndef SCHEDULERROUDROBIN_H
-#define SCHEDULERROUDROBIN_H
+#ifndef SCHEDULERPRIORITY_H
+#define SCHEDULERPRIORITY_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,8 +25,10 @@
 #include "queue.h"
 #include "ep1.h"
 
-void* jobRR(void *argument);
+float calcQuantum (float t);
 
-void schedulerRoudRobin(thr *process, char *name, char *output, char *d);
+void* jobP(void *argument);
+
+void schedulerPriority(thr *process, char *name, char *output, char *d);
 
 #endif

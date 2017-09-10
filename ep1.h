@@ -14,6 +14,7 @@
 
 #include "schedulerSJF.h"
 #include "schedulerRoudRobin.h"
+#include "schedulerPriority.h"
 #include "structs.h"
 
 #define N 1024
