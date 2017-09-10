@@ -96,21 +96,25 @@ void enqueueThreads(thr *process, int qntProcess, struct node **rear, struct nod
 }
 
 int main(int argc, char *argv[ ]) {
-	char *name, *output, *d;
+	char *name, *output, *d, *scheduler;
 	process = malloc (N * sizeof(thr));
-	if(argc >= 3) {
-		name = argv[1];
-		output = argv[2];
-		if (argc == 4)
-			d = argv[3];
+	if(argc >= 4) {
+		scheduler = argv[1];
+		name = argv[2];
+		output = argv[3];
+		if (argc == 5)
+			d = argv[4];
 	}
 	else {
 		printf("Argumento inválido\n");
 	}
-	printf("Qnt armazenada: %d \n", qntProcess);
-	schedulerSJF(process, name, output, d);
-	//schedulerRoudRobin(process, name, output, d);
-	//schedulerPriority(process, name, output, d);
+	printf("Qnt armazenada: %d e sche : %d\n", qntProcess, scheduler[0]);
+	if(scheduler[0] == 49) // == 1
+		schedulerSJF(process, name, output, d);
+	if(scheduler[0] == 50)
+		schedulerRoudRobin(process, name, output, d);
+	if(scheduler[0] == 51)
+		schedulerPriority(process, name, output, d);
 	
 	//enqueueThreads(process);
 	// enqueueThreads(process);

@@ -36,9 +36,7 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	int verbose;  
 	char buffer[30];
 	struct timeval tv;
-	float ti;
-	time_t curtime , running, begin, end;
-	time_t b;
+	time_t curtime , running, begin, end, b;
 
 	printf(" Aqui %c e %d\n", d[0], d[0]);
 	if (d[0] == 100) verbose = 1;

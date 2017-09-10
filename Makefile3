@@ -4,8 +4,8 @@ CFLAGS:=-Wall -g -lpthread -lreadline
 ep1: ep1.o schedulerSJF.o schedulerRoudRobin.o schedulerPriority.o queue.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-ep1sh: ep1sh.o ep1.o schedulerSJF.o schedulerRoudRobin.o schedulerPriority.o queue.o
-	$(CC) $(CFLAGS) -o $@ $^
+#ep1sh: ep1sh.o ep1.o schedulerSJF.o schedulerRoudRobin.o schedulerPriority.o queue.o
+#	$(CC) $(CFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
