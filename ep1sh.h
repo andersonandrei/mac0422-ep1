@@ -4,13 +4,7 @@
 #ifndef EP1SH_H
 #define EP1SH_H
 
-
-
-#include "ep1.h"
 #include "mainData.h"
-#include "schedulerSJF.h"
-#include "schedulerRoudRobin.h"
-#include "schedulerPriority.h"
 
 /* Receive a struct input and a readline 'in',
    split the 'in' and save in the input table

@@ -1,0 +1,14 @@
+Instruções para compilação e execução dos binários ep1sh e ep1.
+
+1. Compilação:
+	Para compilá-los basta utilizar o Makefile existente, digitando o comando "make" no terminal.
+2. Execução:
+	Para executar o ep1sh basta executar o comando "./ep1sh" e então o shell próprio deste ep será aberto.
+	O ep1 só deve ser utilizado dentro do ep1sh.
+	Para executar o ep1, dentro do shell aberto pelo ep1sh, utiliza-se o padrão:
+		ep1 <scheduler> <trace> <output> [d] , onde:
+			<scheduler> é um inteiro que varia de 1 a 3 sendo respectivamente : SJF, RoudRobin e Escalonamento com Prioridade;
+ 			<trace> é o nome do arquivo de trace a ser dado como entrada;
+			<output> é o nome do arquivo de saída, onde serão gravados os resultados;
+			[d] é uma flag opcional, que habilita a exibição de mensagens que possibilitam acompanhar o adamento do programa.
+	

@@ -74,7 +74,7 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 		//cont = 0;
 		//b = 0;
 		while (process[verif].t <= (running-b) && !empty) {
-			if (verbose) printf(">> Processo %s recebido no sistema\n", process[verif].name);
+			if (verbose) fprintf(stderr, ">> Processo %s recebido no sistema\n", process[verif].name);
 			i = 0;
 			enqueueThreadDt(process[verif], &rearSJF, &frontSJF);
 			cont++;
@@ -101,12 +101,13 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				printf("Erro ao criar\n");
 			}
 			else {
-				if (verbose) printf(">> Processo %s utilizando a CPU: 0. \n", process[id].name);
+				//if (verbose) printf(">> Processo %s utilizando a CPU: 0. \n", process[id].name);
+				if (verbose) fprintf(stderr, ">> Processo %s utilizando a CPU: 0. \n", process[id].name);
 				pthread_mutex_lock(&process[id].mutex);
 				result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
 				pthread_join(process[id].thread, NULL);
-				if (verbose) printf(">> Processo %s liberando a CPU: 0. \n", process[id].name);
-				if (verbose) printf(">> Processo %s finalizado. Escrevendo na linha %d do arquivo %s.\n", 
+				if (verbose) fprintf(stderr, ">> Processo %s liberando a CPU: 0. \n", process[id].name);
+				if (verbose) fprintf(stderr, ">> Processo %s finalizado. Escrevendo na linha %d do arquivo %s.\n", 
 					process[id].name, linePrinted, output);
 				fprintf(out, "%s ", process[id].name);
 				pthread_mutex_unlock(&process[id].mutex);
@@ -121,6 +122,6 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 		}
 	}
 	fclose(out);
-	if (verbose) printf(">> Quantidade de mudanças de contexto: %d.\n", prempcao);
+	if (verbose) fprintf(stderr, ">> Quantidade de mudanças de contexto: %d.\n", prempcao);
 		
 }
