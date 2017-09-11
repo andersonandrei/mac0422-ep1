@@ -1,3 +1,6 @@
+/*  EP1 - MAC0422 - Anderson Andrei da Silva
+    Shell + Gerenciador de processos */
+
 #include "schedulerSJF.h"
 
 void* job(void *argument){
@@ -22,23 +25,16 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	struct node *rearSJF, *frontSJF;
 	struct node *rearPool, *frontPool;
 	struct rusage ru;
-	//float begin, end, running, b;
-	int id;
+	int id, verif;
 	int result_code;
-	int qntProcess;
-	int cont;
-	int i;
-	int verif;
-	int empty = 0;
-	int control;
-	int prempcao = 0;
+	int qntProcess, cont, control;
+	int i, verbose;  
+	int empty = 0, prempcao = 0;
 	int linePrinted = 0;
-	int verbose;  
 	char buffer[30];
 	struct timeval tv;
 	time_t curtime , running, begin, end, b;
 
-	//print(" Aqui %c e %d\n", d[0], d[0]);
 	if (d[0] == 100) verbose = 1;
 	rearPool = NULL;
 	frontPool = NULL;
@@ -46,33 +42,20 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	frontSJF = NULL;
 	createThreads(name, &qntProcess, verbose);
 
-	//print("Escalonador ------------\n");
 	enqueueThreads(process, qntProcess, &rearPool, &frontPool); //created the pool
-	//print("Cont : %d", qntProcess);
-
 	gettimeofday(&tv, NULL);
-	b = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
+	b = tv.tv_sec;
 	i = 0;
-	//print("\n Size: %d\n", queuesize(rearPool, frontPool));
 	out = fopen(output, "w");
 	control = queuesize(rearPool, frontPool);
 	cont = 0;
 	while (queuesize(rearPool, frontPool) > 0 || control > 0) {
-
-		if (empty) {
-			//print("Empty\n");
-			//return;
-		}
 		if (i == 0 && !empty) {
-			//print("Pegou no i = 0\n");
 			verif = deq(&rearPool, &frontPool);
 			i = 1;
 		}
 		gettimeofday(&tv, NULL);
-		running = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
-		//running = 0;
-		//cont = 0;
-		//b = 0;
+		running = tv.tv_sec;
 		while (process[verif].t <= (running-b) && !empty) {
 			if (verbose) fprintf(stderr, ">> Processo %s recebido no sistema\n", process[verif].name);
 			i = 0;
@@ -83,25 +66,17 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				i = 1;
 			}
 			else {
-				//print("Esvaziou a pilha\n");
 				empty = 1;
 			}
 		}
-		/*getrusage(RUSAGE_SELF, &ru); //start the time
-		begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
-			ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
-		*/
 		gettimeofday(&tv, NULL);
-		begin = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
-		//while (cont > 0) {
+		begin = tv.tv_sec;
 		if (cont > 0) {
-			//print("Tem coisa na oficial\n");
 			id = deq(&rearSJF, &frontSJF);
 			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
 				printf("Erro ao criar thread\n");
 			}
 			else {
-				//if (verbose) printf(">> Processo %s utilizando a CPU: 0. \n", process[id].name);
 				if (verbose) fprintf(stderr, ">> Processo %s utilizando a CPU: 0. \n", process[id].name);
 				pthread_mutex_lock(&process[id].mutex);
 				result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
@@ -113,8 +88,7 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				pthread_mutex_unlock(&process[id].mutex);
 			}
 			gettimeofday(&tv, NULL);
-			end = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
-			//print("Begin com : %.2ld e encerrou com : %.2ld\n", begin-b, end-b);
+			end = tv.tv_sec;
 			fprintf(out, "%2.2ld %2.2ld \n", end-b, end-b-(time_t)process[id].t);
 			linePrinted++;
 			cont--;

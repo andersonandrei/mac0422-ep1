@@ -1,3 +1,7 @@
+/*  EP1 - MAC0422 - Anderson Andrei da Silva
+    Shell + Gerenciador de processos */
+
+
 #ifndef SCHEDULERPRIORITY_H
 #define SCHEDULERPRIORITY_H
 
@@ -24,10 +28,13 @@
 #include "queue.h"
 #include "ep1.h"
 
+/* Return the specific quantum */
 float calcQuantum (float t);
 
+/* The job of the threads */
 void* jobP(void *argument);
 
+/* Scheduler by prioriry*/
 void schedulerPriority(thr *process, char *name, char *output, char *d);
 
 #endif

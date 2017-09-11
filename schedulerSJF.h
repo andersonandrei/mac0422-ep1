@@ -1,3 +1,6 @@
+/*  EP1 - MAC0422 - Anderson Andrei da Silva
+    Shell + Gerenciador de processos */
+
 #ifndef SCHEDULERSJF_H
 #define SCHEDULERSJF_H
 
@@ -23,37 +26,10 @@
 #include "queue.h"
 #include "ep1.h"
 
+/* The job of the threads */
 void* job(void *argument);
 
+/* SJF scheduler */
 void schedulerSJF(thr *process, char *name, char *output, char *d);
-
-/*while (cont > 0) {
-			printf("Executou\n");
-			id = deq(&rearSJF, &frontSJF);
-			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
-				printf("Erro ao criar\n");
-			}
-			else {
-				printf("\n Vai criar thread: %s \n", process[id].name);
-				pthread_mutex_lock(&process[id].mutex);
-				result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
-				pthread_join(process[id].thread, NULL);
-				// fprintf(out, process[id].name);
-				// getrusage(RUSAGE_THREAD, &ru);
-				// utime = ru.ru_utime;
-				// fputc(tim1, out);
-				// fputc(time2, out);
-				pthread_mutex_unlock(&process[id].mutex);
-			}
-			//getrusage(RUSAGE_THREAD, &ru);
-			end = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
-				ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
-			printf("Encerrou com : %.2f\n", end-begin);
-			//getrusage(RUSAGE_THREAD, &ru);
-			begin = ru.ru_utime.tv_sec + ((float) ru.ru_utime.tv_usec / 1000000) +
-				ru.ru_stime.tv_sec + ((float) ru.ru_stime.tv_usec / 1000000);
-			cont--;
-		}*/
-
 
 #endif

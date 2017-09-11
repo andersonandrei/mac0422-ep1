@@ -1,3 +1,6 @@
+/*	EP1 - MAC0422 - Anderson Andrei da Silva
+	Shell + Gerenciador de processos */
+
 #ifndef EP1_H
 #define EP1_H
 
@@ -18,18 +21,16 @@
 
 #define N 1024
 
-void printingInfo();
-
+/* Receive a FILE name, read e save the information in the process *thr */
 void createThreads(char *name, int *qntProcess, int verbose);
 
-void destroyThreads();
-
-void executeThreads();
-
+/* Enqueu the thread ordered by dt*/
 void enqueueThreadDt(thr thread, struct node **rear, struct node **front);
 
+/* Enqueu the thread ordered by t0*/
 void enqueueThreadT(thr thread, struct node **rear, struct node **front);
 
+/* Enqueue all the threads*/
 void enqueueThreads(thr *process, int qntProcess, struct node **rear, struct node **front);
 
 int main(int argc, char *argv[ ]);

@@ -1,9 +1,6 @@
-/*
- * C Program to Implement Queue Data Structure using Linked List
- */
-/*
- * C Program to Implement Queue Data Structure using Linked List
- */
+/*  EP1 - MAC0422 - Anderson Andrei da Silva
+    Shell + Gerenciador de processos */
+
 #include "queue.h"
 
 int count = 0;
@@ -30,7 +27,6 @@ int queuesize(struct node *rear, struct node *front) {
 /* Enqueing the queue */
 void enq(struct node *data, struct node **rear, struct node **front)
 {   
-    //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
     if (rear == NULL) {
         *rear = (struct node *)malloc(1*sizeof(struct node));
         (*rear)->ptr = NULL;
@@ -45,6 +41,7 @@ void enq(struct node *data, struct node **rear, struct node **front)
     return ;
 }
 
+/* Help the enq() */
 void check(struct node *data, struct node **rear, struct node **front) {
     struct node *current, *prev, *new;
     current = *front;
@@ -68,6 +65,7 @@ void check(struct node *data, struct node **rear, struct node **front) {
     return;
 }
 
+/* Enqueing in the end of queue */
 void enqEnd(struct node *data, struct node **rear, struct node **front)
 {
     if (front == NULL) {

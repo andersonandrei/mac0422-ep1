@@ -1,6 +1,6 @@
-/*	EP1 - MAC0422 
-	Shell + Gerenciados de processos
-*/
+/*  EP1 - MAC0422 - Anderson Andrei da Silva
+  Shell + Gerenciador de processos */
+
 #ifndef EP1SH_H
 #define EP1SH_H
 
@@ -41,9 +41,6 @@ void internCalls (input inp);
 */
 void calls (input inp);
 
-void* perform_work(int i);
-
-void usingThreads(int NUM_THREADS);
 
 int main ();
 

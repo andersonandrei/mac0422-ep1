@@ -1,3 +1,6 @@
+/*  EP1 - MAC0422 - Anderson Andrei da Silva
+    Shell + Gerenciador de processos */
+
 #ifndef SCHEDULERROUDROBIN_H
 #define SCHEDULERROUDROBIN_H
 
@@ -24,8 +27,10 @@
 #include "queue.h"
 #include "ep1.h"
 
+/* The job of the threads */
 void* jobRR(void *argument);
 
+/* Roud Robin scheduler*/
 void schedulerRoudRobin(thr *process, char *name, char *output, char *d);
 
 #endif
