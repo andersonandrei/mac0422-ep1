@@ -66,7 +66,7 @@ void checkEnd (struct node *data, struct node **rear, struct node **front) {
         prev = current;
         current = current->ptr;
     }
-    -if(prev == NULL) {
+    if(prev == NULL) {
         new->ptr = *front;
         *front = new;
     }
@@ -83,7 +83,7 @@ void checkEnd (struct node *data, struct node **rear, struct node **front) {
 
 
 /* Enqueing the queue */
-/*void enqEnd(struct node *data, struct node **rear, struct node **front)
+void enqEnd(struct node *data, struct node **rear, struct node **front)
 {   
     //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
     if (rear == NULL) {
@@ -122,10 +122,9 @@ void checkEnd(struct node *data, struct node **rear, struct node **front) {
         *rear = new;
     }
     return;
-}*/
+}
 
-
-void enqEnd(struct node *data, struct node **rear, struct node **front)
+/*void enqEnd(struct node *data, struct node **rear, struct node **front)
 {   
     //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
     struct node *current;
@@ -136,7 +135,7 @@ void enqEnd(struct node *data, struct node **rear, struct node **front)
     current = data;
     current -> ptr = NULL;
     return ;
-}
+}*/
 
 /*void enqEnd(struct node *data, struct node **rear, struct node **front)
 {   
