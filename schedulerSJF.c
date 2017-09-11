@@ -115,12 +115,13 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 			gettimeofday(&tv, NULL);
 			end = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
 			printf("Begin com : %.2ld e encerrou com : %.2ld\n", begin-b, end-b);
-			fprintf(out, "%.2ld %.2ld \n", end-b, end-begin);
+			fprintf(out, "%2.2ld %2.2ld \n", end-b, end-begin);
 			linePrinted++;
 			cont--;
 			control--;
 		}
 	}
+	fprintf(out, "%d\n", prempcao);
 	fclose(out);
 	if (verbose) fprintf(stderr, ">> Quantidade de mudanças de contexto: %d.\n", prempcao);
 		
