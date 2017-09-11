@@ -11,7 +11,6 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <grp.h>
-
 #include "schedulerSJF.h"
 #include "schedulerRoudRobin.h"
 #include "schedulerPriority.h"
@@ -21,7 +20,7 @@
 
 void printingInfo();
 
-void createThreads(char *name, int *qntProcess);
+void createThreads(char *name, int *qntProcess, int verbose);
 
 void destroyThreads();
 

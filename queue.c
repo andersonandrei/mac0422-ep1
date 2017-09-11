@@ -28,135 +28,10 @@ int queuesize(struct node *rear, struct node *front) {
 }
 
 /* Enqueing the queue */
-
-/*void enqEnd (struct node *data, struct node **rear, struct node **front)
-{
-    //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
-    fflush(stdout);
-    if (front == 0) {
-        printf("Rear NULL \n");
-        fflush(stdout);
-        *front = (struct node *)malloc(1*sizeof(struct node));
-        (*front)->ptr = NULL;
-        (*front)->info = data->info;
-        (*front)->id = data->id;
-        *front = *rear;
-    }
-    else {
-        printf("Check \n");
-        fflush(stdout);
-        checkEnd(data, rear, front);
-    }
-    count++;
-    return ;
-}
-
-void checkEnd (struct node *data, struct node **rear, struct node **front) {
-    struct node *current, *prev, *new;
-    current = *rear;
-    prev = NULL;
-    new = (struct node *)malloc(1*sizeof(struct node));
-    new->info = data->info;
-    new->id = data->id;
-    printf("Vai Checkar \n");
-    fflush(stdout);
-    while(current != NULL) {
-        printf("Andou \n");
-        fflush(stdout);
-        prev = current;
-        current = current->ptr;
-    }
-    if(prev == NULL) {
-        new->ptr = *front;
-        *front = new;
-    }
-    printf("Vai setar prev \n");
-    fflush(stdout);
-
-    prev->ptr = new;
-    *rear = new;
-
-    new->ptr = NULL;
-    return;
-}*/
-
-
-
-/* Enqueing the queue */
-void enqEnd(struct node *data, struct node **rear, struct node **front)
-{   
-    //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
-    if (rear == NULL) {
-        printf("\n Rear ta null");
-        *rear = (struct node *)malloc(1*sizeof(struct node));
-        (*rear)->ptr = NULL;
-        (*rear)->info = data->info;
-        (*rear)->id = data->id;
-        *front = *rear;
-    }
-    else {
-        checkEnd(data, rear, front);
-    }
-    count++;
-    return ;
-}
-
-void checkEnd(struct node *data, struct node **rear, struct node **front) {
-    struct node *current, *prev, *new;
-    current = *front;
-    prev = NULL;
-    new = (struct node *)malloc(1*sizeof(struct node));
-    new->info = data->info;
-    new->id = data->id;
-    while(current != NULL) {
-        prev = current;
-        current = current->ptr;
-    }
-    if(prev == NULL) {
-        new->ptr = NULL;
-        *front = *rear = new;
-    }
-    else {
-        prev->ptr = new;
-        new->ptr = NULL;
-        *rear = new;
-    }
-    return;
-}
-
-/*void enqEnd(struct node *data, struct node **rear, struct node **front)
-{   
-    //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
-    struct node *current;
-    current = *front;
-    while(current!=NULL)
-        current = current -> ptr;
-    current = malloc(sizeof(struct node *));
-    current = data;
-    current -> ptr = NULL;
-    return ;
-}*/
-
-/*void enqEnd(struct node *data, struct node **rear, struct node **front)
-{   
-    //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
-    struct node *current, *prev;
-    current = *front;
-    while(current!=NULL) {
-        prev = current;
-        current = current -> ptr;
-    }
-    if(*front == NULL) *front = data;
-    else current->ptr = data;
-    return ;
-}*/
-
-/* Enqueing the queue */
 void enq(struct node *data, struct node **rear, struct node **front)
 {   
     //printf("Entrou pra empilhar : %d #%08x\n e #%08x , %d\n",data->id, rear, front, queuesize(*rear, *front));
     if (rear == NULL) {
-        printf("\n Rear ta null");
         *rear = (struct node *)malloc(1*sizeof(struct node));
         (*rear)->ptr = NULL;
         (*rear)->info = data->info;
@@ -193,25 +68,20 @@ void check(struct node *data, struct node **rear, struct node **front) {
     return;
 }
 
-/*void enqEnd(struct node *data, struct node **rear, struct node **front)
+void enqEnd(struct node *data, struct node **rear, struct node **front)
 {
-    struct node *new;
-    new = (struct node *)malloc(1*sizeof(struct node));
-    new->info = data->info;
-    new->id = data->id;
     if (front == NULL) {
-        *front = (struct node *)malloc(1*sizeof(struct node));
-        (*front)->ptr = NULL;
-        (*front)->info = data->info;
-        (*front)->id = data->id;
-        *rear = *front;
+        *rear = data;
+
+        *front = data;
+
     }
     else {
-        new->ptr = NULL;
-        (*front) = new;
+        data->ptr = NULL;
+        (*rear) = data;
     }
     return;
-}*/
+}
 
 /* Dequeing the queue */
 int deq(struct node **rear, struct node **front)
@@ -220,7 +90,7 @@ int deq(struct node **rear, struct node **front)
     struct node *current, *prev;
     current = *front;
     prev = NULL;
-    while(current->ptr != NULL) {
+    while(current != NULL && current->ptr != NULL) {
         prev = current;
         current = current->ptr;
     }
@@ -231,7 +101,8 @@ int deq(struct node **rear, struct node **front)
         id = current->id;
         if(prev == NULL) {
             current = NULL;
-            *front = *rear = NULL;
+            *front = NULL;
+            *rear = NULL;
         }
         else {
             current = NULL;
@@ -239,7 +110,6 @@ int deq(struct node **rear, struct node **front)
             //*rear = prev;
         }
         count--;
-        printf("Desepilhando %d\n", id);
         return id;
     }
 }

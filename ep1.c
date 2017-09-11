@@ -11,7 +11,7 @@ void printingInfo() {
 	}
 }
 
-void createThreads(char *name, int *qntProcess) {
+void createThreads(char *name, int *qntProcess, int verbose) {
   	FILE *arq;
   	int result;
   	int i;
@@ -22,22 +22,22 @@ void createThreads(char *name, int *qntProcess) {
 	if (arq != NULL) {
 		result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 		for (i = 0; result != EOF; i++){
-			fprintf(stderr, "Processo inserido no siste: %s - linha : %d\n", n, i);
+			if(verbose) fprintf(stderr, ">> Processo inserido no sistema: %s - linha : %d\n", n, i);
 			process[i].id = i;
 	    	process[i].name = n;
 	    	process[i].t = t;
 	    	process[i].dt =  dt;
 	    	process[i].deadline = deadline;
-	    	printf("Process %s : %.2f %.2f %.2f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
+	    	//print("Process %s : %.2f %.2f %.2f\n", process[i].name, process[i].t, process[i].dt, process[i].deadline);
 	    	cont++;
 	    	n = malloc (1024 * sizeof(char));
 	    	result = fscanf(arq, "%f %f %f %s", &t, &dt, &deadline, n);
 		}
 		*qntProcess = cont;
-		printf("guardei: %d\n", *qntProcess);
+		//print("guardei: %d\n", *qntProcess);
 	}
 	else {
-		printf("Nops\n");
+		//print("Nops\n");
 	}
 	fclose(arq);
 }
@@ -60,10 +60,10 @@ void executeThreads() {
   	//time_t seconds;
   	int i;
  	gettimeofday(&tv, NULL); 
- 	printf("%ld\n" ,tv.tv_sec);
- 	printf("qnt: %d" , qntProcess);
+ 	//print("%ld\n" ,tv.tv_sec);
+ 	//print("qnt: %d" , qntProcess);
  	for (i = 0; i < qntProcess; i++) {
- 		printf("Thread : %s\n", process[i].name);
+ 		//print("Thread : %s\n", process[i].name);
  		pthread_join(process[i].thread, NULL);
  	}
 }
@@ -108,7 +108,7 @@ int main(int argc, char *argv[ ]) {
 	else {
 		printf("Argumento inválido\n");
 	}
-	printf("Qnt armazenada: %d e sche : %d\n", qntProcess, scheduler[0]);
+	//print("Qnt armazenada: %d e sche : %d\n", qntProcess, scheduler[0]);
 	if(scheduler[0] == 49) // == 1
 		schedulerSJF(process, name, output, d);
 	if(scheduler[0] == 50)

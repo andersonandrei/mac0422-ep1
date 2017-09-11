@@ -38,33 +38,33 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 	struct timeval tv;
 	time_t curtime , running, begin, end, b;
 
-	printf(" Aqui %c e %d\n", d[0], d[0]);
+	//print(" Aqui %c e %d\n", d[0], d[0]);
 	if (d[0] == 100) verbose = 1;
 	rearPool = NULL;
 	frontPool = NULL;
 	rearSJF = NULL;
 	frontSJF = NULL;
-	createThreads(name, &qntProcess);
+	createThreads(name, &qntProcess, verbose);
 
-	printf("Escalonador ------------\n");
+	//print("Escalonador ------------\n");
 	enqueueThreads(process, qntProcess, &rearPool, &frontPool); //created the pool
-	printf("Cont : %d", qntProcess);
+	//print("Cont : %d", qntProcess);
 
 	gettimeofday(&tv, NULL);
 	b = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
 	i = 0;
-	printf("\n Size: %d\n", queuesize(rearPool, frontPool));
+	//print("\n Size: %d\n", queuesize(rearPool, frontPool));
 	out = fopen(output, "w");
 	control = queuesize(rearPool, frontPool);
 	cont = 0;
 	while (queuesize(rearPool, frontPool) > 0 || control > 0) {
 
 		if (empty) {
-			printf("Empty\n");
+			//print("Empty\n");
 			//return;
 		}
 		if (i == 0 && !empty) {
-			printf("Pegou no i = 0\n");
+			//print("Pegou no i = 0\n");
 			verif = deq(&rearPool, &frontPool);
 			i = 1;
 		}
@@ -83,7 +83,7 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 				i = 1;
 			}
 			else {
-				printf("Esvaziou a pilha\n");
+				//print("Esvaziou a pilha\n");
 				empty = 1;
 			}
 		}
@@ -95,10 +95,10 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 		begin = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);
 		//while (cont > 0) {
 		if (cont > 0) {
-			printf("Tem coisa na oficial\n");
+			//print("Tem coisa na oficial\n");
 			id = deq(&rearSJF, &frontSJF);
 			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
-				printf("Erro ao criar\n");
+				printf("Erro ao criar thread\n");
 			}
 			else {
 				//if (verbose) printf(">> Processo %s utilizando a CPU: 0. \n", process[id].name);
@@ -114,8 +114,8 @@ void schedulerSJF(thr *process, char *name, char *output, char *d) {
 			}
 			gettimeofday(&tv, NULL);
 			end = tv.tv_sec;// + ((float)tv.tv_usec / 1000000);;
-			printf("Begin com : %.2ld e encerrou com : %.2ld\n", begin-b, end-b);
-			fprintf(out, "%2.2ld %2.2ld \n", end-b, end-begin);
+			//print("Begin com : %.2ld e encerrou com : %.2ld\n", begin-b, end-b);
+			fprintf(out, "%2.2ld %2.2ld \n", end-b, end-b-(time_t)process[id].t);
 			linePrinted++;
 			cont--;
 			control--;

@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//current dir
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -17,7 +16,6 @@
 #include <sys/types.h>
 #include <grp.h>
 #include <time.h>
-
 #include <pthread.h>
 #include <assert.h>
 #include <semaphore.h>
