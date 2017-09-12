@@ -14,7 +14,6 @@ void* jobP(void *argument){
 	struct rusage ru;
 	float seconds = 0; 
 	int i, j;
-	thr *t = (thr *) argument;
 	getrusage(RUSAGE_THREAD, &ru);
 	seconds = 0;
 	while (seconds < 1) {
@@ -39,7 +38,7 @@ void schedulerPriority(thr *process, char *name, char *output, char *d) {
 	int empty = 0, prempcao = 0;
 	int verbose, parted = 0;
 	struct timeval tv;
-	time_t curtime , running, begin, end, b;
+	time_t running, end, b;
 	time_t *timeThreads;
 
 	if (d[0] == 100) verbose = 1;
@@ -86,6 +85,7 @@ void schedulerPriority(thr *process, char *name, char *output, char *d) {
 				if (verbose) fprintf(stderr, ">> Processo %s utilizando a CPU: 0. \n", process[id].name);
 				pthread_mutex_lock(&process[id].mutex);
 				result_code = pthread_create(&process[id].thread, NULL, &jobP, &process[id]);
+				if(result_code!=0) printf("Erro ao criar a thread\n");
 				pthread_join(process[id].thread, NULL);
 				if (verbose) fprintf(stderr, ">> Processo %s liberando a CPU: 0. \n", process[id].name);
 				pthread_mutex_unlock(&process[id].mutex);

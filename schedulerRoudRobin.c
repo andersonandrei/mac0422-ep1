@@ -9,8 +9,6 @@ void* jobRR(void *argument){
 	struct rusage ru;
 	float seconds = 0; 
 	int i, j;
-
-	thr *t = (thr *) argument;
 	getrusage(RUSAGE_THREAD, &ru);
 	seconds = 0;
 	while (seconds < (quantum)) {
@@ -25,7 +23,7 @@ void* jobRR(void *argument){
 
 void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 	FILE *out;
-	struct node *rearP, *frontP;
+	struct node *rearRR, *frontRR;
 	struct node *rearPool, *frontPool;
 	struct node *p;
 	int id, verif;
@@ -34,9 +32,9 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 	int cont, control, linePrinted = 0;
 	int i, j;
 	int empty = 0, prempcao = 0;
-	int verbose, parted = 0;
+	int verbose;
 	struct timeval tv;
-	time_t curtime , running, begin, end, b;
+	time_t running, end, b;
 	time_t *timeThreads;
 
 	if (d[0] == 100) verbose = 1;
@@ -75,8 +73,6 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 				empty = 1;
 			}
 		}
-		gettimeofday(&tv, NULL);
-		begin = tv.tv_sec;
 		if (cont > 0) {
 			id = deq(&rearRR, &frontRR);
 			if(pthread_mutex_init(&process[id].mutex, NULL) != 0) {
@@ -86,6 +82,9 @@ void schedulerRoudRobin(thr *process, char *name, char *output, char *d) {
 				if (verbose) fprintf(stderr, ">> Processo %s utilizando a CPU: 0. \n", process[id].name);
 				pthread_mutex_lock(&process[id].mutex);
 				result_code = pthread_create(&process[id].thread, NULL, &job, &process[id]);
+				if(result_code != 0) {
+					printf("Falha ao criar a thread\n");
+				}
 				pthread_join(process[id].thread, NULL);
 				if (verbose) fprintf(stderr, ">> Processo %s liberando a CPU: 0. \n", process[id].name);
 				pthread_mutex_unlock(&process[id].mutex);

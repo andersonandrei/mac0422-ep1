@@ -61,6 +61,7 @@ void enqueueThreads(thr *process, int qntProcess, struct node **rear, struct nod
 
 int main(int argc, char *argv[ ]) {
 	char *name, *output, *d, *scheduler;
+	d = 0;
 	process = malloc (N * sizeof(thr));
 	if(argc >= 4) {
 		scheduler = argv[1];

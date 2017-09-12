@@ -1,0 +1,77 @@
+Resultados da análise de dados:
+
+Desvio Padrão (30 amostras) : 8,8
+Intervalo de confiança de 95% :	3,28
+
+Mudança de Contexto:
+	Computador 1:
+
+		Arquivo pequeno (5threads)
+		SJF = 0
+		RR = 3.83
+		P = 3.83
+
+		Arquivo médio (10 threads)
+		SJF = 0
+		RR = 1.73
+		P = 1.73
+
+		Arquivo grande (15 threads)
+		SJF = 0
+		RR = 2.53
+		P = 2.53
+
+	Computador 2
+
+		Arquivo pequeno (5threads)
+		SJF = 0
+		RR = 3.83
+		P = 3.83
+
+		Arquivo médio (10 threads)
+		SJF = 0
+		RR = 1.73
+		P = 1.73
+
+		Arquivo grande (15 threads)
+		SJF = 0
+		RR = 2.53
+		P = 2.53
+
+Deadlines:
+
+	Computador 1
+
+		Arquivo pequeno (5threads)
+		SJF = 0.1
+		RR = 0.0
+		P = 0.0
+
+		Arquivo médio (10 threads)
+		SJF = 0.23
+		RR = 0.0
+		P = 0.0
+
+
+		Arquivo grande (15 threads)
+		SJF = 0.5
+		RR = 0.0
+		P = 0.0
+
+	Computador 2
+
+		Arquivo pequeno (5threads)
+		SJF = 0.1
+		RR = 0.0
+		P = 0.0
+
+		Arquivo médio (10 threads)
+		SJF = 0.23
+		RR = 0.0
+		P = 0.0
+
+
+		Arquivo grande (15 threads)
+		SJF = 0.5
+		RR = 0.0
+		P = 0.0
